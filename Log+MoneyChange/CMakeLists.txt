@@ -36,6 +36,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         src/main.cpp src/mainwindow.cpp src/mainwindow.h src/mainwindow.ui src/moneywindow.cpp src/moneywindow.h src/moneywindow.ui src/Users.cpp src/Users.h
         src/main.cpp src/mainwindow.cpp src/mainwindow.h src/mainwindow.ui src/moneywindow.cpp src/moneywindow.h src/moneywindow.ui src/Users.cpp src/Users.h
         src/errorwindow.cpp src/errorwindow.h src/errorwindow.ui src/main.cpp src/mainwindow.cpp src/mainwindow.h src/mainwindow.ui src/moneywindow.cpp src/moneywindow.h src/moneywindow.ui src/Users.cpp src/Users.h
+        src/moneychange.h src/moneychange.cpp src/moneychange.ui
+
 
 
     )

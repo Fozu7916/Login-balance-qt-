@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_3->setEchoMode(QLineEdit::Password);
 
     //сделать коннект с дб vestor<Users> users - массив всех пользователей из дб
-    Users NewUser("Fozu","qszxaw12");
+    Users NewUser("","");
     users.push_back(NewUser);
 
 

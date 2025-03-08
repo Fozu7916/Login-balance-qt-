@@ -1,6 +1,7 @@
 //moneywindow.cpp
 #include "moneywindow.h"
 #include "ui_moneywindow.h"
+#include "moneychange.h"
 
 MoneyWindow::MoneyWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,3 +15,15 @@ MoneyWindow::~MoneyWindow()
 {
     delete ui;
 }
+
+void MoneyWindow::on_AddButton_clicked()
+{
+    MoneyChange *m2 = new MoneyChange();
+}
+
+
+void MoneyWindow::on_RemoveButton_clicked()
+{
+
+}
+
