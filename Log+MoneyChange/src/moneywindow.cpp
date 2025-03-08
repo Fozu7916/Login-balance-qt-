@@ -34,3 +34,6 @@ void MoneyWindow::on_RemoveButton_clicked()
     change->show();
 }
 
+
+
+

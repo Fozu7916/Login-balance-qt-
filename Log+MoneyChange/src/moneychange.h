@@ -16,6 +16,8 @@ public:
     ~MoneyChange();
     bool flag_decrease;
 
+
+
 private slots:
     void on_ConfirmButton_clicked();
 
