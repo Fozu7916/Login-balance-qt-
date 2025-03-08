@@ -6,6 +6,7 @@
 #include "errorwindow.h"
 
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -19,8 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit_3->setEchoMode(QLineEdit::Password);
 
     //сделать коннект с дб vestor<Users> users - массив всех пользователей из дб
+    //connect_on_db();
     Users NewUser("","");
     users.push_back(NewUser);
+    Users NewUser2("Fozu","qszxaw12");
+    users.push_back(NewUser2);
+    Users NewUser3("qq","ww");
+    users.push_back(NewUser3);
 
 
 }
@@ -63,7 +69,6 @@ bool MainWindow::login(std::vector<Users> users)
     }
     return user_finded;
 }
-
 
 
 

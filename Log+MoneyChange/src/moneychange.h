@@ -14,6 +14,10 @@ class MoneyChange : public QMainWindow
 public:
     explicit MoneyChange(QWidget *parent = nullptr);
     ~MoneyChange();
+    bool flag_decrease;
+
+private slots:
+    void on_ConfirmButton_clicked();
 
 private:
     Ui::MoneyChange *ui;

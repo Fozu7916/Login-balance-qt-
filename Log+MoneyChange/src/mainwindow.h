@@ -22,8 +22,6 @@ public:
 private slots:
     void on_pushButton_clicked();
     bool login(std::vector<Users> users);
-
-
 private:
     Ui::MainWindow *ui;
     std::vector<Users> users;

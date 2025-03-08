@@ -2,8 +2,7 @@
 #define MONEYWINDOW_H
 
 #include <QMainWindow>
-#include "users.h"
-
+#include "Users.h"
 
 namespace Ui {
 class MoneyWindow;
