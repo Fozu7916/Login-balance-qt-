@@ -10,7 +10,7 @@ public:
     Users(QString first, QString second);
     ~Users();
 
-    static int money;
+    int money;
 
     QString getName() const;
     void setName(const QString& name);

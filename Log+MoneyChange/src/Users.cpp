@@ -9,7 +9,6 @@ Users::Users(QString first, QString second)
 
 Users::~Users() {}
 
-int Users::money = 0.0;//обязательная иницианализаиця
 
 QString Users::getName() const {
     return name;

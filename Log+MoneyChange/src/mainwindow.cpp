@@ -41,19 +41,20 @@ void MainWindow::on_pushButton_clicked()
     bool user_finded = login(users);
     if(user_finded)
     {
-        this->close();
-        MoneyWindow *NewWindow = new MoneyWindow();
+        this->hide();
+        MoneyWindow *NewWindow = new MoneyWindow(MainWindow::current_user);
         NewWindow->show();
     }
     else
     {
+        ErrorWindow *Error = new ErrorWindow();
         Error->show();
         Error->raise();
     }
 }
 
 
-bool MainWindow::login(std::vector<Users> users)
+bool MainWindow::login(std::vector<Users> &users)
 {
     bool user_finded = false;
     for(int i = 0;i<users.size();i++)
@@ -64,6 +65,7 @@ bool MainWindow::login(std::vector<Users> users)
         {
             users[i].money = 10000; // тут считывать значение с дб
             user_finded = true;
+            MainWindow::current_user = &users[i];
             break;
         }
     }

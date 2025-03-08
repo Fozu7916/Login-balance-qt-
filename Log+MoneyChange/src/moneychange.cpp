@@ -3,12 +3,15 @@
 #include "ui_moneychange.h"
 #include "Users.h"
 #include <QString>
+#include <qregularexpression.h>
+#include "errorwindow.h"
 
-MoneyChange::MoneyChange(QWidget *parent)
+MoneyChange::MoneyChange(Users *user,QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MoneyChange)
 {
     ui->setupUi(this);
+    this->user = user;
 }
 
 MoneyChange::~MoneyChange()
@@ -16,18 +19,25 @@ MoneyChange::~MoneyChange()
     delete ui;
 }
 
-void MoneyChange::on_ConfirmButton_clicked()
-{
-    Users here("1","1");
-    if(flag_decrease)
+void MoneyChange::on_ConfirmButton_clicked() {
+    int amount = ui->lineEdit->text().toInt();
+    bool is_number;
+    ui->lineEdit->text().toInt(&is_number);
+    if(flag_decrease and is_number)
     {
-        here.money -=  ui->lineEdit->text().toInt();
-        this->hide();
+        MoneyChange::user->money -= amount;
     }
-    else if(!flag_decrease)
+    else if(!flag_decrease and is_number)
     {
-        here.money +=  ui->lineEdit->text().toInt();
-        this->hide();
+        MoneyChange::user->money += amount;
     }
+    else
+    {
+        ErrorWindow *err = new ErrorWindow();
+        err->setErrorMessage("Введено не числовое значение");
+        err->show();
+    }
+    emit moneyChanged();
+    close();
 }
 

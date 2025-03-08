@@ -23,3 +23,7 @@ void ErrorWindow::on_pushButton_clicked()
 }
 
 
+void ErrorWindow::setErrorMessage(const QString& message)
+{
+    ui->label->setText(message);
+}

@@ -13,6 +13,7 @@ class ErrorWindow : public QMainWindow
 
 public:
     explicit ErrorWindow(QWidget *parent = nullptr);
+    void setErrorMessage(const QString& message);
     ~ErrorWindow();
     bool window_showed;
 private slots:

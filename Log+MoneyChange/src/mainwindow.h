@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include "Users.h"
-#include "errorwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,12 +18,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private slots:
     void on_pushButton_clicked();
-    bool login(std::vector<Users> users);
+    bool login(std::vector<Users> &users);
 private:
     Ui::MainWindow *ui;
     std::vector<Users> users;
-    ErrorWindow *Error = new ErrorWindow();
+    Users *current_user;
 };
 #endif // MAINWINDOW_H
