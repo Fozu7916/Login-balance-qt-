@@ -12,7 +12,7 @@ class MoneyChange : public QMainWindow
 {
     Q_OBJECT
 signals:
-    void moneyChanged();
+    void moneyChanged(int amount);
 
 public:
     explicit MoneyChange(Users *user,QWidget *parent = nullptr);

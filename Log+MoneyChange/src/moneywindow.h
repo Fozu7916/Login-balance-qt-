@@ -15,7 +15,7 @@ class MoneyWindow : public QMainWindow
 public:
     explicit MoneyWindow(Users *user,QWidget *parent = nullptr);
     ~MoneyWindow();
-    void updateDisplay();
+    void updateDisplay(int amount);
 
 
 

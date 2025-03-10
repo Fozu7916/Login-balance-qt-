@@ -36,8 +36,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
-{
+void MainWindow::on_pushButton_clicked(){
     bool user_finded = login(users);
     if(user_finded)
     {
@@ -54,8 +53,7 @@ void MainWindow::on_pushButton_clicked()
 }
 
 
-bool MainWindow::login(std::vector<Users> &users)
-{
+bool MainWindow::login(std::vector<Users> &users){
     bool user_finded = false;
     for(int i = 0;i<users.size();i++)
     {

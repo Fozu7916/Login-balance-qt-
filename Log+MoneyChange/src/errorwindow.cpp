@@ -17,13 +17,11 @@ ErrorWindow::~ErrorWindow()
 }
 
 
-void ErrorWindow::on_pushButton_clicked()
-{
+void ErrorWindow::on_pushButton_clicked(){
     this->close();
 }
 
 
-void ErrorWindow::setErrorMessage(const QString& message)
-{
+void ErrorWindow::setErrorMessage(const QString& message){
     ui->label->setText(message);
 }

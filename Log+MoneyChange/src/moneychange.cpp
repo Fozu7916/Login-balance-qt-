@@ -26,10 +26,12 @@ void MoneyChange::on_ConfirmButton_clicked() {
     if(flag_decrease and is_number)
     {
         MoneyChange::user->money -= amount;
+        emit moneyChanged(-amount);
     }
     else if(!flag_decrease and is_number)
     {
         MoneyChange::user->money += amount;
+        emit moneyChanged(amount);
     }
     else
     {
@@ -37,7 +39,6 @@ void MoneyChange::on_ConfirmButton_clicked() {
         err->setErrorMessage("Введено не числовое значение");
         err->show();
     }
-    emit moneyChanged();
     close();
 }
 

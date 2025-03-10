@@ -3,6 +3,9 @@
 #include "ui_moneywindow.h"
 #include "Users.h"
 #include "moneychange.h"
+#include <QListWidgetItem>
+#include <QString>
+#include <QDateTime>
 
 MoneyWindow::MoneyWindow(Users *user,QWidget *parent)
     : QMainWindow(parent)
@@ -19,8 +22,7 @@ MoneyWindow::~MoneyWindow()
     delete ui;
 }
 
-void MoneyWindow::on_AddButton_clicked()
-{
+void MoneyWindow::on_AddButton_clicked() {
     MoneyChange *change = new MoneyChange(user);
     change->flag_decrease = false;
     change->setWindowTitle("Пополнить");
@@ -30,8 +32,7 @@ void MoneyWindow::on_AddButton_clicked()
 
 
 
-void MoneyWindow::on_RemoveButton_clicked()
-{
+void MoneyWindow::on_RemoveButton_clicked() {
     MoneyChange *change = new MoneyChange(user);
     change->flag_decrease = true;
     change->setWindowTitle("Cнять");
@@ -39,9 +40,21 @@ void MoneyWindow::on_RemoveButton_clicked()
     change->show();
 }
 
-void MoneyWindow::updateDisplay() {
-    ui->label_3->setText(QString::number(user->money));
+void MoneyWindow::updateDisplay(int amount) {
+    QString transaction;
+    QDateTime now = QDateTime::currentDateTime();
+    QString dateTimeString = now.toString("yyyy-MM-dd HH:mm:ss");
+    QString operation;
+    if(amount > 0){
+        operation = " Пополнение: ";
+    }
+    else{
+        operation = " Снятие: ";
+    }
 
+    transaction = dateTimeString + operation + QString::number(amount) + " Текущий баланс: " + QString::number(user->money);
+    ui->HistoryView->addItem(transaction);
+    ui->label_3->setText(QString::number(user->money));
 }
 
 
