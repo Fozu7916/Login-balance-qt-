@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
 qt_add_executable(Log+MoneyChange
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    src/changebackground.h
+    src/changebackground.cpp
 )
 
 # ==================== Линковка ====================

@@ -6,6 +6,7 @@
 #include <QListWidgetItem>
 #include <QString>
 #include <QDateTime>
+#include "changebackground.h"
 
 MoneyWindow::MoneyWindow(Users *user,QWidget *parent)
     : QMainWindow(parent)
@@ -22,8 +23,11 @@ MoneyWindow::~MoneyWindow()
     delete ui;
 }
 
+
+
 void MoneyWindow::on_AddButton_clicked() {
     MoneyChange *change = new MoneyChange(user);
+    changebackground(change,":/images/2nd background.jpg");
     change->flag_decrease = false;
     change->setWindowTitle("Пополнить");
     connect(change, &MoneyChange::moneyChanged, this, &MoneyWindow::updateDisplay);
@@ -34,11 +38,14 @@ void MoneyWindow::on_AddButton_clicked() {
 
 void MoneyWindow::on_RemoveButton_clicked() {
     MoneyChange *change = new MoneyChange(user);
+    changebackground(change,":/images/2nd background.jpg");
     change->flag_decrease = true;
     change->setWindowTitle("Cнять");
     connect(change, &MoneyChange::moneyChanged, this, &MoneyWindow::updateDisplay);
     change->show();
 }
+
+
 
 void MoneyWindow::updateDisplay(int amount) {
     QString transaction;

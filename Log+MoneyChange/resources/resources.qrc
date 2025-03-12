@@ -2,5 +2,8 @@
 <RCC version="1.0">
   <qresource prefix="/">
     <file>images/background.png</file>
+    <file>images/2nd background.jpg</file>
+    <file>images/error.png</file>
   </qresource>
 </RCC>
+

@@ -4,6 +4,7 @@
 #include "moneywindow.h"
 #include "Users.h"
 #include "errorwindow.h"
+#include "changebackground.h"
 
 
 
@@ -12,11 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QPixmap bkgnd(":/images/background.png");
-    QPixmap scaledBkgnd = bkgnd.scaled(this->size(), Qt::KeepAspectRatioByExpanding);
-    QPalette pal;
-    pal.setBrush(QPalette::Window, scaledBkgnd);
-    this->setPalette(pal);
+    changebackground(this,":/images/background.png");
     ui->lineEdit_3->setEchoMode(QLineEdit::Password);
 
     //сделать коннект с дб vestor<Users> users - массив всех пользователей из дб
@@ -42,6 +39,7 @@ void MainWindow::on_pushButton_clicked(){
     {
         this->hide();
         MoneyWindow *NewWindow = new MoneyWindow(MainWindow::current_user);
+        changebackground(NewWindow,":/images/2nd background.jpg");
         NewWindow->show();
     }
     else
@@ -69,7 +67,6 @@ bool MainWindow::login(std::vector<Users> &users){
     }
     return user_finded;
 }
-
 
 
 
