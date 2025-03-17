@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSqlDatabase>
 #include "Users.h"
 
 QT_BEGIN_NAMESPACE
@@ -22,9 +23,13 @@ public:
 private slots:
     void on_pushButton_clicked();
     bool login(std::vector<Users> &users);
+    bool connectToMySQL();
+    std::vector<Users> getUsersFromDatabase(QSqlDatabase &db);
+    int getMoneyForUser(const QString& username);
 private:
     Ui::MainWindow *ui;
     std::vector<Users> users;
     Users *current_user;
+    QSqlDatabase db;
 };
 #endif // MAINWINDOW_H

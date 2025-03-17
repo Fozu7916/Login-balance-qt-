@@ -13,6 +13,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets Sql)
 find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
 
+# ==================== MySQL ====================
+# Проверка наличия MySQL client library
+if(WIN32)
+    find_file(MYSQL_DLL libmysql.dll
+        PATHS "C:/Program Files/MySQL/MySQL Server 8.0/lib"
+        DOC "Path to MySQL client library"
+    )
+else()
+    find_package(MySQL REQUIRED)
+endif()
+
 # ==================== Источники ====================
 set(PROJECT_SOURCES
     src/main.cpp
@@ -22,14 +33,13 @@ set(PROJECT_SOURCES
     src/errorwindow.cpp src/errorwindow.h src/errorwindow.ui
     src/moneychange.cpp src/moneychange.h src/moneychange.ui
     resources/resources.qrc
+    src/changebackground.h src/changebackground.cpp
 )
 
 # ==================== Исполняемый файл ====================
 qt_add_executable(Log+MoneyChange
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    src/changebackground.h
-    src/changebackground.cpp
 )
 
 # ==================== Линковка ====================
@@ -38,6 +48,21 @@ target_link_libraries(Log+MoneyChange PRIVATE
     Qt6::Sql
 )
 
+if(UNIX AND NOT APPLE)
+    target_link_libraries(Log+MoneyChange PRIVATE mysqlclient)
+endif()
+
+# ==================== Копирование DLL (Windows) ====================
+if(WIN32 AND MYSQL_DLL)
+    add_custom_command(TARGET Log+MoneyChange POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "${MYSQL_DLL}"
+            "$<TARGET_FILE_DIR:Log+MoneyChange>"
+        COMMENT "Copying MySQL DLL to output directory"
+    )
+endif()
+
+# ==================== Настройки платформ ====================
 set_target_properties(Log+MoneyChange PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}

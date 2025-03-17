@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>сс</string>
   </property>
+  <property name="windowIcon">
+   <iconset theme="QIcon::ThemeIcon::Computer"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
     <property name="geometry">

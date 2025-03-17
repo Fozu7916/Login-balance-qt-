@@ -5,6 +5,12 @@
 #include "Users.h"
 #include "errorwindow.h"
 #include "changebackground.h"
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QDebug>
+#include <QSqlQuery>
+#include <vector>
+
 
 
 
@@ -15,16 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     changebackground(this,":/images/background.png");
     ui->lineEdit_3->setEchoMode(QLineEdit::Password);
-
-    //сделать коннект с дб vestor<Users> users - массив всех пользователей из дб
-    //connect_on_db();
-    Users NewUser("","");
-    users.push_back(NewUser);
-    Users NewUser2("Fozu","qszxaw12");
-    users.push_back(NewUser2);
-    Users NewUser3("qq","ww");
-    users.push_back(NewUser3);
-
+    connectToMySQL();
+    users = getUsersFromDatabase(db);
 
 }
 
@@ -59,7 +57,7 @@ bool MainWindow::login(std::vector<Users> &users){
         QString enteredPassword = users[i].getPassword();
         if(ui->lineEdit->text() == enteredUsername and ui->lineEdit_3->text() == enteredPassword )
         {
-            users[i].money = 10000; // тут считывать значение с дб
+            users[i].money = getMoneyForUser(enteredUsername); // тут считывать значение с дб
             user_finded = true;
             MainWindow::current_user = &users[i];
             break;
@@ -69,6 +67,64 @@ bool MainWindow::login(std::vector<Users> &users){
 }
 
 
+bool MainWindow::connectToMySQL() {
+    MainWindow::db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("localhost");
+    db.setPort(3306);
+    db.setDatabaseName("users");
+    db.setUserName("root");
+    db.setPassword("root");
+
+    if (!db.open()) {
+        qCritical() << "Ошибка подключения:" << db.lastError().text();
+        return false;
+    }
+    qDebug() << "Подключение успешно!";
+    return true;
+}
+
+
+std::vector<Users> MainWindow::getUsersFromDatabase(QSqlDatabase &db) {
+    std::vector<Users> users_from_db;
+    if (!db.isOpen()) {
+        qDebug() << "Ошибка: База данных не открыта.";
+        return users_from_db;
+    }
+
+    QSqlQuery query(db);
+    if (!query.exec("SELECT Name, Password, money FROM users")) {
+        qDebug() << "Ошибка запроса:" << query.lastError().text();
+        return users_from_db;
+    }
+
+    while (query.next()) {
+        Users user;
+        user.setName(query.value(0).toString());
+        user.setPassword(query.value(1).toString());
+        user.money = query.value(2).toInt();
+        users_from_db.push_back(user);
+    }
+
+    return users_from_db;
+}
 
 
 
+int MainWindow::getMoneyForUser(const QString& username) {
+    QSqlQuery query(db);
+    query.prepare("SELECT money FROM users WHERE Name = ?");
+    query.addBindValue(username);
+    if (query.exec()) {
+        if (query.next()) {
+            bool ok;
+            return query.value(0).toInt(&ok);
+        } else {
+            qWarning() << "Пользователь не найден";
+            return -1;
+        }
+
+    } else {
+        qCritical() << "Ошибка запроса getMoneyForUser:" << query.lastError().text();
+        return -1;
+    }
+}

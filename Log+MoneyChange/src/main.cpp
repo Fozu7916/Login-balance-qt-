@@ -1,7 +1,11 @@
 //main.cpp
 #include "mainwindow.h"
 #include <QApplication>
-//#include <QSqlDatabase>
+#include <QCoreApplication>
+#include <QDir>
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QPluginLoader>
 
 
 int main(int argc, char *argv[])
