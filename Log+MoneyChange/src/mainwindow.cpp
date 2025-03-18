@@ -36,7 +36,7 @@ void MainWindow::on_pushButton_clicked(){
     if(user_finded)
     {
         this->hide();
-        MoneyWindow *NewWindow = new MoneyWindow(MainWindow::current_user);
+        MoneyWindow *NewWindow = new MoneyWindow(MainWindow::current_user,db);
         changebackground(NewWindow,":/images/2nd background.jpg");
         NewWindow->show();
     }

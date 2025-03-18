@@ -20,7 +20,7 @@ MoneyChange::~MoneyChange()
 }
 
 void MoneyChange::on_ConfirmButton_clicked() {
-    int amount = ui->lineEdit->text().toInt();
+    int amount = ui->lineEdit->text().toInt(&ok);
     bool is_number;
     ui->lineEdit->text().toInt(&is_number);
     if(flag_decrease and is_number)

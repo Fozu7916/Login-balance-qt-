@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QSqlDatabase db;
 
 
 private slots:
@@ -30,6 +31,5 @@ private:
     Ui::MainWindow *ui;
     std::vector<Users> users;
     Users *current_user;
-    QSqlDatabase db;
 };
 #endif // MAINWINDOW_H
