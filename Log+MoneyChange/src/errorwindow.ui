@@ -29,7 +29,7 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="MainText">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -71,7 +71,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="ConfirmButton">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -89,7 +89,7 @@
      <string>Ок</string>
     </property>
    </widget>
-   <widget class="QWidget" name="widget" native="true">
+   <widget class="QWidget" name="WarningImage" native="true">
     <property name="geometry">
      <rect>
       <x>0</x>

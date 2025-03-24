@@ -20,25 +20,37 @@ MoneyChange::~MoneyChange()
 }
 
 void MoneyChange::on_ConfirmButton_clicked() {
-    int amount = ui->lineEdit->text().toInt();
+    int balance = user->getMoney();
     bool is_number;
-    ui->lineEdit->text().toInt(&is_number);
-    if(flag_decrease and is_number)
+    int amount = ui->MoneyEnter->text().toInt(&is_number);
+    if( getFlag() and is_number and amount>= 0)
     {
-        MoneyChange::user->money -= amount;
-        emit moneyChanged(-amount);
+        if (balance - amount < 0) {
+            ErrorWindow::showWindow("Недостаточно средств");
+            return;
+        }
+        MoneyChange::user->setMoney(balance - amount);
+        emit moneyChanged(-1 * amount);
     }
-    else if(!flag_decrease and is_number)
+    else if( !getFlag() and is_number and amount>= 0)
     {
-        MoneyChange::user->money += amount;
+        MoneyChange::user->setMoney(balance + amount);
         emit moneyChanged(amount);
     }
     else
     {
-        ErrorWindow *err = new ErrorWindow();
-        err->setErrorMessage("Введено не числовое значение");
-        err->show();
+        ErrorWindow::showWindow("Неверное введёное значение");
     }
     close();
+}
+
+bool MoneyChange::getFlag(){
+    return flag_decrease;
+}
+
+
+
+void MoneyChange::setFlag(bool boolean){
+    flag_decrease = boolean;
 }
 

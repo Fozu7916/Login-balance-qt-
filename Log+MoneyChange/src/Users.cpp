@@ -11,27 +11,41 @@ Users::Users(QString first, QString second)
 {
     name = first;
     password = second;
+    money = 0;
 }
 
-Users::Users() {}
+Users::Users() : name(""), password(""), money(0) {}
 
 Users::~Users() {}
 
+int Users::getMoney(){
+    return money;
+}
 
 QString Users::getName() const {
     return name;
+}
+
+
+QString Users::getPassword() const {
+    return password;
+}
+
+
+
+void Users::setMoney(int money_here) {
+    if(money_here >=0){
+        this->money = money_here;
+    }
 }
 
 void Users::setName(const QString& name) {
     this->name = name;
 }
 
-QString Users::getPassword() const {
-    return password;
-}
-
 void Users::setPassword(const QString& password) {
     this->password = password;
 }
+
 
 

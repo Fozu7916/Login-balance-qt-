@@ -4,6 +4,7 @@
 #include "moneywindow.h"
 #include "Users.h"
 #include "errorwindow.h"
+#include "registrwindow.h"
 #include "changebackground.h"
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -20,9 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     changebackground(this,":/images/background.png");
-    ui->lineEdit_3->setEchoMode(QLineEdit::Password);
-    connectToMySQL();
-    users = getUsersFromDatabase(db);
+    ui->PasEdit->setEchoMode(QLineEdit::Password);
+    if(connectToMySQL()) {
+        users = getUsersFromDatabase(db);
+    }
+
 
 }
 
@@ -31,44 +34,43 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked(){
+void MainWindow::on_ConfirmButton_clicked()
+{
     bool user_finded = login(users);
     if(user_finded)
     {
         this->hide();
         MoneyWindow *NewWindow = new MoneyWindow(MainWindow::current_user,db);
         changebackground(NewWindow,":/images/2nd background.jpg");
+        NewWindow->setAttribute(Qt::WA_DeleteOnClose);
         NewWindow->show();
     }
     else
     {
-        ErrorWindow *Error = new ErrorWindow();
-        Error->show();
-        Error->raise();
+        ErrorWindow::showWindow("Неверный логин или пароль");
     }
 }
 
 
-bool MainWindow::login(std::vector<Users> &users){
-    bool user_finded = false;
-    for(int i = 0;i<users.size();i++)
-    {
-        QString enteredUsername = users[i].getName();
-        QString enteredPassword = users[i].getPassword();
-        if(ui->lineEdit->text() == enteredUsername and ui->lineEdit_3->text() == enteredPassword )
-        {
-            users[i].money = getMoneyForUser(enteredUsername); // тут считывать значение с дб
-            user_finded = true;
-            MainWindow::current_user = &users[i];
-            break;
+bool MainWindow::login(std::vector<Users> &users) {
+    QString trueUsername = ui->NameEdit->text();
+    QString truePassword = ui->PasEdit->text();
+
+    for (auto& user : users) {
+        if (trueUsername == user.getName() && truePassword == user.getPassword()) {
+            user.setMoney(getMoneyForUser(trueUsername));
+            current_user = &user;
+            return true;
         }
     }
-    return user_finded;
+    return false;
 }
 
 
 bool MainWindow::connectToMySQL() {
     MainWindow::db = QSqlDatabase::addDatabase("QMYSQL");
+
+    //тут меняем данные под нашу конкретную бд
     db.setHostName("localhost");
     db.setPort(3306);
     db.setDatabaseName("users");
@@ -76,32 +78,29 @@ bool MainWindow::connectToMySQL() {
     db.setPassword("root");
 
     if (!db.open()) {
-        qCritical() << "Ошибка подключения:" << db.lastError().text();
+        ErrorWindow::showWindow("Ошибка подключения к таблице");
         return false;
     }
-    qDebug() << "Подключение успешно!";
     return true;
 }
 
 
 std::vector<Users> MainWindow::getUsersFromDatabase(QSqlDatabase &db) {
     std::vector<Users> users_from_db;
-    if (!db.isOpen()) {
-        qDebug() << "Ошибка: База данных не открыта.";
-        return users_from_db;
-    }
-
     QSqlQuery query(db);
-    if (!query.exec("SELECT Name, Password, money FROM users")) {
-        qDebug() << "Ошибка запроса:" << query.lastError().text();
-        return users_from_db;
+
+
+
+    if (!query.exec("SELECT Name, Hash_Password, Money FROM users")) {
+        ErrorWindow::showWindow("Ошибка: таблица пуста");
+
     }
 
     while (query.next()) {
         Users user;
         user.setName(query.value(0).toString());
         user.setPassword(query.value(1).toString());
-        user.money = query.value(2).toInt();
+        user.setMoney(query.value(2).toInt());
         users_from_db.push_back(user);
     }
 
@@ -112,19 +111,38 @@ std::vector<Users> MainWindow::getUsersFromDatabase(QSqlDatabase &db) {
 
 int MainWindow::getMoneyForUser(const QString& username) {
     QSqlQuery query(db);
-    query.prepare("SELECT money FROM users WHERE Name = ?");
+    query.prepare("SELECT Money FROM users WHERE Name = ?");
     query.addBindValue(username);
     if (query.exec()) {
         if (query.next()) {
             bool ok;
             return query.value(0).toInt(&ok);
-        } else {
-            qWarning() << "Пользователь не найден";
+        }
+        else {
             return -1;
         }
 
-    } else {
-        qCritical() << "Ошибка запроса getMoneyForUser:" << query.lastError().text();
+    }
+    else {
+        ErrorWindow::showWindow("Ошибка запроса getMoneyForUser");
         return -1;
     }
 }
+
+
+
+
+void MainWindow::on_RegistrButton_clicked()
+{
+    static bool isShown = false;
+    if (!isShown) {
+        RegistrWindow *RegWindow = new RegistrWindow(&this->users,&this->db);
+        changebackground(RegWindow,":/images/background.png");
+        RegWindow->setAttribute(Qt::WA_DeleteOnClose);
+        RegWindow->show();
+        isShown = true;
+        QObject::connect(RegWindow, &RegistrWindow::destroyed, []{ isShown = false; });
+    }
+
+}
+

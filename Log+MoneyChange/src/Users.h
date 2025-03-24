@@ -11,16 +11,20 @@ public:
     Users();
     ~Users();
 
-    int money;
+
 
     QString getName() const;
-    void setName(const QString& name);
     QString getPassword() const;
+    int getMoney();
+
     void setPassword(const QString& password);
+    void setName(const QString& name);
+    void setMoney(int money_here);
 
 private:
     QString name;
     QString password;
+    int money;
 };
 
 #endif // USERS_H

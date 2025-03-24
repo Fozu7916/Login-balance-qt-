@@ -15,9 +15,9 @@ public:
     explicit ErrorWindow(QWidget *parent = nullptr);
     void setErrorMessage(const QString& message);
     ~ErrorWindow();
-    bool window_showed;
+    static void showWindow(const QString& error);
 private slots:
-    void on_pushButton_clicked();
+    void on_ConfirmButton_clicked();
 
 private:
     Ui::ErrorWindow *ui;

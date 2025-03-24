@@ -22,11 +22,14 @@ public:
 
 
 private slots:
-    void on_pushButton_clicked();
     bool login(std::vector<Users> &users);
     bool connectToMySQL();
     std::vector<Users> getUsersFromDatabase(QSqlDatabase &db);
     int getMoneyForUser(const QString& username);
+    void on_ConfirmButton_clicked();
+
+    void on_RegistrButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     std::vector<Users> users;

@@ -17,7 +17,9 @@ signals:
 public:
     explicit MoneyChange(Users *user,QWidget *parent = nullptr);
     ~MoneyChange();
-    bool flag_decrease;
+    bool getFlag();
+    void setFlag(bool boolean);
+
 
 
 
@@ -27,6 +29,7 @@ private slots:
 private:
     Ui::MoneyChange *ui;
     Users *user;
+    bool flag_decrease;
 };
 
 #endif // MONEYCHANGE_H

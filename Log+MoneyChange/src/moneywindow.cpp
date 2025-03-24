@@ -9,6 +9,7 @@
 #include <qsqlerror.h>
 #include <qsqlquery.h>
 #include "changebackground.h"
+#include "errorwindow.h"
 
 MoneyWindow::MoneyWindow(Users *user,QSqlDatabase db,QWidget *parent)
     : QMainWindow(parent)
@@ -16,7 +17,7 @@ MoneyWindow::MoneyWindow(Users *user,QSqlDatabase db,QWidget *parent)
 {
     ui->setupUi(this);
     this->user = user;
-    ui->label_3->setText(QString::number(user->money));
+    ui->MoneyLabel->setText(QString::number(user->getMoney()));
     setWindowTitle(user->getName());
     this->db = db;
 }
@@ -29,23 +30,13 @@ MoneyWindow::~MoneyWindow()
 
 
 void MoneyWindow::on_AddButton_clicked() {
-    MoneyChange *change = new MoneyChange(user);
-    changebackground(change,":/images/2nd background.jpg");
-    change->flag_decrease = false;
-    change->setWindowTitle("Пополнить");
-    connect(change, &MoneyChange::moneyChanged, this, &MoneyWindow::updateDisplay);
-    change->show();
+    MoneyWindow::openNewWindow(false,"Пополнить");
 }
 
 
 
 void MoneyWindow::on_RemoveButton_clicked() {
-    MoneyChange *change = new MoneyChange(user);
-    changebackground(change,":/images/2nd background.jpg");
-    change->flag_decrease = true;
-    change->setWindowTitle("Cнять");
-    connect(change, &MoneyChange::moneyChanged, this, &MoneyWindow::updateDisplay);
-    change->show();
+    MoneyWindow::openNewWindow(true,"Снять");
 }
 
 
@@ -61,18 +52,18 @@ void MoneyWindow::updateDisplay(int amount) {
         operation = " Снятие: ";
     }
 
-    transaction = dateTimeString + operation + QString::number(amount) + " Текущий баланс: " + QString::number(user->money);
+    transaction = dateTimeString + operation + QString::number(amount) + " Текущий баланс: " + QString::number(user->getMoney());
     ui->HistoryView->addItem(transaction);
-    ui->label_3->setText(QString::number(user->money));
+    ui->MoneyLabel->setText(QString::number(user->getMoney()));
 
-    if (!updateMoneyInDatabase(user->money)) {
-        qCritical() << "Ошибка обновления money в базе данных";
+    if (!updateMoneyInDatabase(user->getMoney())) {
+        ErrorWindow::showWindow("Ошибка обновления money в базе данных");
     }
 }
 
 bool MoneyWindow::updateMoneyInDatabase(int newMoney) {
     if (!db.isOpen()) {
-        qCritical() << "База данных не открыта в updateMoneyInDatabase!";
+        ErrorWindow::showWindow("Ошибка подключенияБаза данных не открыта в updateMoneyInDatabase!");
         return false;
     }
 
@@ -82,11 +73,21 @@ bool MoneyWindow::updateMoneyInDatabase(int newMoney) {
     query.addBindValue(user->getName());
 
     if (!query.exec()) {
-        qCritical() << "Ошибка при выполнении запроса UPDATE:" << query.lastError().text();
+        ErrorWindow::showWindow("Ошибка обновления баланса");
         return false;
     }
 
     return true;
+}
+
+void MoneyWindow::openNewWindow(bool flag,const QString& phrase) {
+    MoneyChange *change = new MoneyChange(user);
+    changebackground(change,":/images/2nd background.jpg");
+    change->setFlag(flag);
+    change->setWindowTitle(phrase);
+    connect(change, &MoneyChange::moneyChanged, this, &MoneyWindow::updateDisplay);
+    change->setAttribute(Qt::WA_DeleteOnClose);
+    change->show();
 }
 
 

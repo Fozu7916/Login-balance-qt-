@@ -36,7 +36,7 @@
      <string>Введите Логин</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="NameEdit">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -71,7 +71,7 @@
      <string>Введите Пароль</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="ConfirmButton">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -90,7 +90,7 @@
      <string>Войти</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
+   <widget class="QLineEdit" name="PasEdit">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -104,6 +104,19 @@
       <family>Cambria</family>
       <pointsize>12</pointsize>
      </font>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="RegistrButton">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>0</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Зарегестрироваться</string>
     </property>
    </widget>
   </widget>

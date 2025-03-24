@@ -7,21 +7,34 @@ ErrorWindow::ErrorWindow(QWidget *parent)
     , ui(new Ui::ErrorWindow)
 {
     ui->setupUi(this);
-    window_showed = true;
 }
 
 ErrorWindow::~ErrorWindow()
 {
         delete ui;
-        window_showed = false;
 }
 
 
-void ErrorWindow::on_pushButton_clicked(){
+
+void ErrorWindow::setErrorMessage(const QString& message){
+    ui->MainText->setText(message);
+}
+
+void ErrorWindow::on_ConfirmButton_clicked()
+{
     this->close();
 }
 
 
-void ErrorWindow::setErrorMessage(const QString& message){
-    ui->label->setText(message);
+void ErrorWindow::showWindow(const QString& error) {
+    static bool isShown = false;
+    if (!isShown) {
+        ErrorWindow *err = new ErrorWindow();
+        err->setErrorMessage(error);
+        err->setAttribute(Qt::WA_DeleteOnClose);
+        err->show();
+        isShown = true;
+        QObject::connect(err, &ErrorWindow::destroyed, []{ isShown = false; });
+    }
 }
+

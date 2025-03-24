@@ -17,7 +17,7 @@
    <iconset theme="QIcon::ThemeIcon::Computer"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="MainLabel">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -53,7 +53,7 @@
      <string>ОК</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="MoneyEnter">
     <property name="geometry">
      <rect>
       <x>100</x>

@@ -19,6 +19,7 @@ public:
     void updateDisplay(int amount);
     QSqlDatabase db;
     bool updateMoneyInDatabase(int newMoney);
+    void openNewWindow(bool flag,const QString& phrase);
 
 
 
