@@ -1,4 +1,4 @@
-#include "changebackground.h"  // Включаем наш заголовочный файл
+#include "changebackground.h"
 #include <QPixmap>
 #include <QPalette>
 #include <QBrush>

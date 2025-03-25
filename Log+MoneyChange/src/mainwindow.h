@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSqlDatabase>
 #include "Users.h"
+#include "database.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,21 +19,19 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QSqlDatabase db;
 
 
 private slots:
     bool login(std::vector<Users> &users);
-    bool connectToMySQL();
-    std::vector<Users> getUsersFromDatabase(QSqlDatabase &db);
-    int getMoneyForUser(const QString& username);
     void on_ConfirmButton_clicked();
-
     void on_RegistrButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     std::vector<Users> users;
     Users *current_user;
+    QSqlDatabase db;
+    DataBase current;
+
 };
 #endif // MAINWINDOW_H

@@ -15,7 +15,7 @@ signals:
     void moneyChanged(int amount);
 
 public:
-    explicit MoneyChange(Users *user,QWidget *parent = nullptr);
+    explicit MoneyChange(Users &user, QWidget *parent = nullptr);
     ~MoneyChange();
     bool getFlag();
     void setFlag(bool boolean);

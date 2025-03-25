@@ -6,12 +6,12 @@
 #include <qregularexpression.h>
 #include "errorwindow.h"
 
-MoneyChange::MoneyChange(Users *user,QWidget *parent)
+MoneyChange::MoneyChange(Users &user, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MoneyChange)
 {
     ui->setupUi(this);
-    this->user = user;
+    this->user = &user;
 }
 
 MoneyChange::~MoneyChange()
@@ -32,7 +32,7 @@ void MoneyChange::on_ConfirmButton_clicked() {
         MoneyChange::user->setMoney(balance - amount);
         emit moneyChanged(-1 * amount);
     }
-    else if( !getFlag() and is_number and amount>= 0)
+    else if( !getFlag() and is_number and amount>= 0 and amount + balance <= INT_MAX)
     {
         MoneyChange::user->setMoney(balance + amount);
         emit moneyChanged(amount);

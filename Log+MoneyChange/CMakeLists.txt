@@ -33,6 +33,8 @@ set(PROJECT_SOURCES
     src/errorwindow.cpp src/errorwindow.h src/errorwindow.ui
     src/moneychange.cpp src/moneychange.h src/moneychange.ui
     src/changebackground.h src/changebackground.cpp
+    src/registrwindow.h src/registrwindow.cpp src/registrwindow.ui
+    src/database.h src/database.cpp
     resources/resources.qrc
 )
 
@@ -40,7 +42,6 @@ set(PROJECT_SOURCES
 qt_add_executable(Log+MoneyChange
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    src/registrwindow.h src/registrwindow.cpp src/registrwindow.ui
 )
 
 # ==================== Линковка ====================

@@ -10,15 +10,16 @@
 #include <qsqlquery.h>
 #include "changebackground.h"
 #include "errorwindow.h"
+#include "database.h"
 
-MoneyWindow::MoneyWindow(Users *user,QSqlDatabase db,QWidget *parent)
+MoneyWindow::MoneyWindow(Users &user, QSqlDatabase &db, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MoneyWindow)
 {
     ui->setupUi(this);
-    this->user = user;
-    ui->MoneyLabel->setText(QString::number(user->getMoney()));
-    setWindowTitle(user->getName());
+    this->user = &user;
+    ui->MoneyLabel->setText(QString::number(user.getMoney()));
+    setWindowTitle(user.getName());
     this->db = db;
 }
 
@@ -56,32 +57,16 @@ void MoneyWindow::updateDisplay(int amount) {
     ui->HistoryView->addItem(transaction);
     ui->MoneyLabel->setText(QString::number(user->getMoney()));
 
-    if (!updateMoneyInDatabase(user->getMoney())) {
+    DataBase current;
+    if (!current.updateMoneyInDatabase(user->getMoney(),db,user)) {
         ErrorWindow::showWindow("Ошибка обновления money в базе данных");
     }
 }
 
-bool MoneyWindow::updateMoneyInDatabase(int newMoney) {
-    if (!db.isOpen()) {
-        ErrorWindow::showWindow("Ошибка подключенияБаза данных не открыта в updateMoneyInDatabase!");
-        return false;
-    }
 
-    QSqlQuery query(db);
-    query.prepare("UPDATE users SET money = ? WHERE Name = ?");
-    query.addBindValue(newMoney);
-    query.addBindValue(user->getName());
-
-    if (!query.exec()) {
-        ErrorWindow::showWindow("Ошибка обновления баланса");
-        return false;
-    }
-
-    return true;
-}
 
 void MoneyWindow::openNewWindow(bool flag,const QString& phrase) {
-    MoneyChange *change = new MoneyChange(user);
+    MoneyChange *change = new MoneyChange(*user);
     changebackground(change,":/images/2nd background.jpg");
     change->setFlag(flag);
     change->setWindowTitle(phrase);

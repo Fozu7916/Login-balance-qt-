@@ -22,6 +22,7 @@ void RegistrWindow::on_pushButton_clicked()
 {
     QString username = ui->NameEdit->text();
     QString password = ui->PasEdit->text();
+    QString password2 = ui->PasEdit_2->text();
 
 
     if(ui->PasEdit->text() != ui->PasEdit_2->text()) {

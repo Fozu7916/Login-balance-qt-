@@ -14,7 +14,7 @@ class MoneyWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MoneyWindow(Users *user,QSqlDatabase db,QWidget *parent = nullptr);
+    explicit MoneyWindow(Users &user, QSqlDatabase &db, QWidget *parent = nullptr);
     ~MoneyWindow();
     void updateDisplay(int amount);
     QSqlDatabase db;
