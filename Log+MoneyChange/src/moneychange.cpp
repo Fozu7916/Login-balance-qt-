@@ -1,17 +1,19 @@
 //moneychange.cpp
 #include "moneychange.h"
+#include "authcontroller.h"
+#include "errorwindow.h"
 #include "ui_moneychange.h"
-#include "Users.h"
 #include <QString>
 #include <qregularexpression.h>
-#include "errorwindow.h"
 
-MoneyChange::MoneyChange(Users &user, QWidget *parent)
+MoneyChange::MoneyChange(AuthController *controller,QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MoneyChange)
+    , m_controller(controller)
 {
     ui->setupUi(this);
-    this->user = &user;
+    connect(m_controller,&AuthController::error,this,&MoneyChange::showError);
+
 }
 
 MoneyChange::~MoneyChange()
@@ -20,37 +22,20 @@ MoneyChange::~MoneyChange()
 }
 
 void MoneyChange::on_ConfirmButton_clicked() {
-    int balance = user->getMoney();
-    bool is_number;
-    int amount = ui->MoneyEnter->text().toInt(&is_number);
-    if( getFlag() and is_number and amount>= 0)
-    {
-        if (balance - amount < 0) {
-            ErrorWindow::showWindow("Недостаточно средств");
-            return;
-        }
-        MoneyChange::user->setMoney(balance - amount);
-        emit moneyChanged(-1 * amount);
-    }
-    else if( !getFlag() and is_number and amount>= 0 and amount + balance <= INT_MAX)
-    {
-        MoneyChange::user->setMoney(balance + amount);
-        emit moneyChanged(amount);
-    }
-    else
-    {
-        ErrorWindow::showWindow("Неверное введёное значение");
-    }
+    m_controller->updateBalance(this->getFlag(),ui->MoneyEnter->text().toInt());
     close();
 }
 
+
 bool MoneyChange::getFlag(){
-    return flag_decrease;
+    return flag;
 }
-
-
 
 void MoneyChange::setFlag(bool boolean){
-    flag_decrease = boolean;
+    flag = boolean;
 }
 
+void MoneyChange::showError(QString text){
+    ErrorWindow *err = new ErrorWindow();
+    err->showWindow(text);
+}

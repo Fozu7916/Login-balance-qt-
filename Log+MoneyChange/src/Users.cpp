@@ -34,7 +34,7 @@ QString Users::getPassword() const {
 
 
 void Users::setMoney(int money_here) {
-    if(money_here >=0){
+    if(money_here >=0 and money_here <= INT_MAX){
         this->money = money_here;
     }
 }

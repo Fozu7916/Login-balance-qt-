@@ -1,38 +1,41 @@
 #include "database.h"
 #include <QSqlDatabase>
 #include <QString>
+#include <qsqlerror.h>
 #include <qsqlquery.h>
 #include "Users.h"
 #include "errorwindow.h"
+#include "config.h"
 
-DataBase::DataBase() {}
-
-
-bool DataBase::connectToMySQL(QSqlDatabase &db) {
-    db = QSqlDatabase::addDatabase("QMYSQL");
-
-    //тут данные из конфига
-    db.setHostName("localhost");
-    db.setPort(3306);
-    db.setDatabaseName("users");
-    db.setUserName("root");
-    db.setPassword("root");
-
-    if (!db.open()) {
-        ErrorWindow::showWindow("Ошибка подключения к таблице");
-        return false;
-    }
-    return true;
+DataBase::DataBase(QSqlDatabase db)
+    :m_db(db)
+{
 }
 
+QSqlDatabase DataBase::connectToMySQL()
+{
+    m_db = QSqlDatabase::addDatabase("QMYSQL");
 
-std::vector<Users> DataBase::getUsersFromDatabase(QSqlDatabase &db) {
-    std::vector<Users> users_from_db;
-    QSqlQuery query(db);
+    m_db.setHostName(Config::DB_HOST);
+    m_db.setPort(Config::DB_PORT);
+    m_db.setDatabaseName(Config::DB_NAME);
+    m_db.setUserName(Config::DB_USER);
+    m_db.setPassword(Config::DB_PASSWORD);
+
+    if (!m_db.open()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка подключения к базе данных");
+    }
+    return m_db;
+}
+
+std::vector<Users> DataBase::getUsersFromDatabase() {
+    std::vector<Users> usersFromDb;
+    QSqlQuery query(m_db);
 
     if (!query.exec("SELECT Name, Hash_Password, Money FROM users")) {
-        ErrorWindow::showWindow("Ошибка: таблица пуста");
-
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка: таблица пуста");
     }
 
     while (query.next()) {
@@ -40,14 +43,14 @@ std::vector<Users> DataBase::getUsersFromDatabase(QSqlDatabase &db) {
         user.setName(query.value(0).toString());
         user.setPassword(query.value(1).toString());
         user.setMoney(query.value(2).toInt());
-        users_from_db.push_back(user);
+        usersFromDb.push_back(user);
     }
 
-    return users_from_db;
+    return usersFromDb;
 }
 
-int DataBase::getMoneyFromUser(QSqlDatabase &db, const QString& username) {
-    QSqlQuery query(db);
+int DataBase::getMoneyFromUser(const QString& username) {
+    QSqlQuery query(m_db);
     query.prepare("SELECT Money FROM users WHERE Name = ?");
     query.addBindValue(username);
     if (query.exec()) {
@@ -58,29 +61,48 @@ int DataBase::getMoneyFromUser(QSqlDatabase &db, const QString& username) {
         else {
             return -1;
         }
-
     }
     else {
-        ErrorWindow::showWindow("Ошибка запроса getMoneyForUser");
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка запроса getMoneyFromUser");
         return -1;
     }
 }
 
-bool DataBase::updateMoneyInDatabase(int newMoney, QSqlDatabase &db, Users *user) {
-    if (!db.isOpen()) {
-        ErrorWindow::showWindow("Ошибка подключенияБаза данных не открыта в updateMoneyInDatabase!");
+bool DataBase::updateMoneyInDatabase(int newMoney, Users *user) {
+    if (!m_db.isOpen()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка: база данных не открыта в updateMoneyInDatabase");
         return false;
     }
 
-    QSqlQuery query(db);
+    QSqlQuery query(m_db);
     query.prepare("UPDATE users SET money = ? WHERE Name = ?");
     query.addBindValue(newMoney);
     query.addBindValue(user->getName());
 
     if (!query.exec()) {
-        ErrorWindow::showWindow("Ошибка обновления баланса");
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка обновления баланса");
         return false;
     }
 
     return true;
 }
+
+void DataBase::addUser(QString password, QString username) {
+    QSqlQuery query(m_db);
+    query.prepare("INSERT INTO users (Name, Hash_Password, Money) VALUES (?, ?, 0)");
+    query.addBindValue(username);
+    query.addBindValue(password); 
+
+    if (!query.exec()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка создания пользователя: " + query.lastError().text());
+        return;
+    }
+}
+
+
+
+

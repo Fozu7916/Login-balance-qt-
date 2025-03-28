@@ -3,8 +3,7 @@
 
 #include <QMainWindow>
 #include <QSqlDatabase>
-#include "Users.h"
-#include "database.h"
+#include "authcontroller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,21 +16,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(AuthController* controller,QWidget *parent = nullptr);
     ~MainWindow();
 
 
 private slots:
-    bool login(std::vector<Users> &users);
+    void createRegistrationWindow();
+    void createMoneyWindow();
     void on_ConfirmButton_clicked();
-    void on_RegistrButton_clicked();
+    void showError(QString text);
 
 private:
+    AuthController* m_controller;
     Ui::MainWindow *ui;
-    std::vector<Users> users;
-    Users *current_user;
-    QSqlDatabase db;
-    DataBase current;
 
 };
 #endif // MAINWINDOW_H

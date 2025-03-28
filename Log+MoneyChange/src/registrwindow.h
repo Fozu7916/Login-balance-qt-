@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <qsqldatabase.h>
-#include "Users.h"
+#include "authcontroller.h"
 
 namespace Ui {
 class RegistrWindow;
@@ -14,16 +14,16 @@ class RegistrWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit RegistrWindow(std::vector<Users> *users,QSqlDatabase *db,QWidget *parent = nullptr);
+    explicit RegistrWindow(AuthController* controller, QWidget *parent = nullptr);
     ~RegistrWindow();
 
 private slots:
     void on_pushButton_clicked();
+    void showError(QString text);
 
 private:
     Ui::RegistrWindow *ui;
-    QSqlDatabase *db;
-    std::vector<Users> *users;
+    AuthController* m_controller;
 };
 
 #endif // REGISTRWINDOW_H

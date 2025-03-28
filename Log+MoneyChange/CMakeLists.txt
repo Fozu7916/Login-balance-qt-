@@ -42,6 +42,9 @@ set(PROJECT_SOURCES
 qt_add_executable(Log+MoneyChange
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    src/authcontroller.h src/authcontroller.cpp
+
+
 )
 
 # ==================== Линковка ====================
