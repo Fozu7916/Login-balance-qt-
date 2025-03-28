@@ -15,7 +15,7 @@ public:
     explicit ErrorWindow(QWidget *parent = nullptr);
     void setErrorMessage(const QString& message);
     ~ErrorWindow();
-    static void showWindow(const QString& error);
+    void showWindow(const QString& error);
 private slots:
     void on_ConfirmButton_clicked();
 

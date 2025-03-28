@@ -26,7 +26,7 @@ void MoneyChange::on_ConfirmButton_clicked() {
     if( getFlag() and is_number and amount>= 0)
     {
         if (balance - amount < 0) {
-            ErrorWindow::showWindow("Недостаточно средств");
+         //   ErrorWindow::showWindow("Недостаточно средств");
             return;
         }
         MoneyChange::user->setMoney(balance - amount);
@@ -39,7 +39,7 @@ void MoneyChange::on_ConfirmButton_clicked() {
     }
     else
     {
-        ErrorWindow::showWindow("Неверное введёное значение");
+       // ErrorWindow::showWindow("Неверное введёное значение");
     }
     close();
 }

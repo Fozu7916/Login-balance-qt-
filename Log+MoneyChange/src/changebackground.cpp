@@ -4,13 +4,12 @@
 #include <QBrush>
 #include <QSize>
 #include <Qt>
-#include "errorwindow.h"
 
 void changebackground(QMainWindow *here,QString backgroundpath){
     QPixmap bkgnd(backgroundpath);
     if(bkgnd.isNull())
     {
-        ErrorWindow::showWindow("Не удалось загрузить фон!");
+       // eth.showError("Не удалось загрузить фон!");
     }
     QPixmap scaledBkgnd = bkgnd.scaled(here->size(), Qt::KeepAspectRatioByExpanding);
     QPalette pal;

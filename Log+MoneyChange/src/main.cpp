@@ -11,8 +11,14 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.setAttribute(Qt::WA_DeleteOnClose);
+    QSqlDatabase database;
+    DataBase db(database);
+    database = db.connectToMySQL();
+
+
+
+    AuthController ath(db);
+    MainWindow w(&ath);
     w.show();
     return a.exec();
 }

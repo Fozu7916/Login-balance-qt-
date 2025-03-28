@@ -1,5 +1,6 @@
 //moneywindow.cpp
 #include "moneywindow.h"
+#include "database.h"
 #include "ui_moneywindow.h"
 #include "Users.h"
 #include "moneychange.h"
@@ -9,18 +10,16 @@
 #include <qsqlerror.h>
 #include <qsqlquery.h>
 #include "changebackground.h"
-#include "errorwindow.h"
-#include "database.h"
 
-MoneyWindow::MoneyWindow(Users &user, QSqlDatabase &db, QWidget *parent)
+MoneyWindow::MoneyWindow(Users &user, DataBase &db, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MoneyWindow)
+    , db(db)
 {
     ui->setupUi(this);
     this->user = &user;
     ui->MoneyLabel->setText(QString::number(user.getMoney()));
     setWindowTitle(user.getName());
-    this->db = db;
 }
 
 MoneyWindow::~MoneyWindow()
@@ -57,9 +56,9 @@ void MoneyWindow::updateDisplay(int amount) {
     ui->HistoryView->addItem(transaction);
     ui->MoneyLabel->setText(QString::number(user->getMoney()));
 
-    DataBase current;
-    if (!current.updateMoneyInDatabase(user->getMoney(),db,user)) {
-        ErrorWindow::showWindow("Ошибка обновления money в базе данных");
+
+    if (!db.updateMoneyInDatabase(user->getMoney(),user)) {
+       // ErrorWindow::showWindow("Ошибка обновления money в базе данных");
     }
 }
 

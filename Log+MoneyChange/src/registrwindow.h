@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <qsqldatabase.h>
 #include "Users.h"
+#include "database.h"
 
 namespace Ui {
 class RegistrWindow;
@@ -14,7 +15,7 @@ class RegistrWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit RegistrWindow(std::vector<Users> *users,QSqlDatabase *db,QWidget *parent = nullptr);
+    explicit RegistrWindow(DataBase &db, QWidget *parent = nullptr);
     ~RegistrWindow();
 
 private slots:
@@ -22,7 +23,7 @@ private slots:
 
 private:
     Ui::RegistrWindow *ui;
-    QSqlDatabase *db;
+    DataBase &db;
     std::vector<Users> *users;
 };
 
