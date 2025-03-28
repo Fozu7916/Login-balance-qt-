@@ -14,9 +14,6 @@ int main(int argc, char *argv[])
     QSqlDatabase database;
     DataBase db(database);
     database = db.connectToMySQL();
-
-
-
     AuthController ath(db);
     MainWindow w(&ath);
     w.show();

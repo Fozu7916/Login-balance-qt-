@@ -1,6 +1,6 @@
 //moneywindow.cpp
 #include "moneywindow.h"
-#include "database.h"
+#include "authcontroller.h"
 #include "ui_moneywindow.h"
 #include "Users.h"
 #include "moneychange.h"
@@ -11,15 +11,14 @@
 #include <qsqlquery.h>
 #include "changebackground.h"
 
-MoneyWindow::MoneyWindow(Users &user, DataBase &db, QWidget *parent)
+MoneyWindow::MoneyWindow(AuthController *controller, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MoneyWindow)
-    , db(db)
+    ,m_controller(controller)
 {
     ui->setupUi(this);
-    this->user = &user;
-    ui->MoneyLabel->setText(QString::number(user.getMoney()));
-    setWindowTitle(user.getName());
+    ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
+    setWindowTitle(m_controller->getUser().getName());
 }
 
 MoneyWindow::~MoneyWindow()
@@ -28,48 +27,26 @@ MoneyWindow::~MoneyWindow()
 }
 
 
-
 void MoneyWindow::on_AddButton_clicked() {
     MoneyWindow::openNewWindow(false,"Пополнить");
 }
-
-
 
 void MoneyWindow::on_RemoveButton_clicked() {
     MoneyWindow::openNewWindow(true,"Снять");
 }
 
-
-
 void MoneyWindow::updateDisplay(int amount) {
-    QString transaction;
-    QString dateTimeString = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-    QString operation;
-    if(amount > 0){
-        operation = " Пополнение: ";
-    }
-    else{
-        operation = " Снятие: ";
-    }
-
-    transaction = dateTimeString + operation + QString::number(amount) + " Текущий баланс: " + QString::number(user->getMoney());
-    ui->HistoryView->addItem(transaction);
-    ui->MoneyLabel->setText(QString::number(user->getMoney()));
-
-
-    if (!db.updateMoneyInDatabase(user->getMoney(),user)) {
-       // ErrorWindow::showWindow("Ошибка обновления money в базе данных");
-    }
+    ui->HistoryView->addItem(m_controller->updateDisplay(amount));
+    ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
 }
 
 
-
 void MoneyWindow::openNewWindow(bool flag,const QString& phrase) {
-    MoneyChange *change = new MoneyChange(*user);
+    MoneyChange *change = new MoneyChange(m_controller);
+    connect(m_controller, &AuthController::moneyChanged, this, &MoneyWindow::updateDisplay);
     changebackground(change,":/images/2nd background.jpg");
     change->setFlag(flag);
     change->setWindowTitle(phrase);
-    connect(change, &MoneyChange::moneyChanged, this, &MoneyWindow::updateDisplay);
     change->setAttribute(Qt::WA_DeleteOnClose);
     change->show();
 }

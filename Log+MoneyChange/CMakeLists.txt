@@ -44,6 +44,7 @@ qt_add_executable(Log+MoneyChange
     ${PROJECT_SOURCES}
     src/authcontroller.h src/authcontroller.cpp
 
+
 )
 
 # ==================== Линковка ====================

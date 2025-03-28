@@ -8,14 +8,14 @@
 class DataBase
 {
 public:
-    DataBase(QSqlDatabase &db);
+    DataBase(QSqlDatabase db);
     int getMoneyFromUser(const QString& username);
     QSqlDatabase connectToMySQL();
     std::vector<Users> getUsersFromDatabase();
-    bool updateMoneyInDatabase(int newMoney,Users *user);
-    void AddUser(std::vector<Users> *users,Users &user,QString password,QString username);
+    bool updateMoneyInDatabase(int newMoney, Users *user);
+    void addUser(QString password, QString username);
 private:
-    QSqlDatabase &m_db;
+    QSqlDatabase m_db;
 };
 
 #endif // DATABASE_H

@@ -21,19 +21,14 @@ public:
 
 
 private slots:
-    void on_ConfirmButton_clicked();
-    void on_RegistrButton_clicked();
     void createRegistrationWindow();
     void createMoneyWindow();
-
-
+    void on_ConfirmButton_clicked();
+    void showError(QString text);
 
 private:
     AuthController* m_controller;
     Ui::MainWindow *ui;
-    void initializeUI();
-    void setupConnetions();
-    bool login(QString username,QString password);
 
 };
 #endif // MAINWINDOW_H

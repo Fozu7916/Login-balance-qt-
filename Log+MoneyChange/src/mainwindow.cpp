@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QSqlQuery>
 #include "authcontroller.h"
+#include "errorwindow.h"
 #include "moneywindow.h"
 #include "registrwindow.h"
 #include "changebackground.h"
@@ -19,50 +20,39 @@ MainWindow::MainWindow(AuthController* controller,QWidget *parent)
     ui->setupUi(this);
     changebackground(this,":/images/background.png");
     ui->PasEdit->setEchoMode(QLineEdit::Password);
-    setupConnetions();
+
+    connect(ui->RegistrButton, &QPushButton::clicked,this, &MainWindow::createRegistrationWindow);
+    connect(m_controller,&AuthController::error,this,&MainWindow::showError);
+    connect(m_controller, &AuthController::moneyWindowRequested,this, &MainWindow::createMoneyWindow);
 }
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-void MainWindow::on_ConfirmButton_clicked()
-{
-    if(login(ui->NameEdit->text(),ui->PasEdit->text())){
-        m_controller->createMoneyWindow();
-    }
-    else{
-       //
-    }
+void MainWindow::on_ConfirmButton_clicked(){
+    m_controller->login(ui->NameEdit->text(),ui->PasEdit->text());
 }
-
-bool MainWindow::login(QString username,QString password) {
-    return m_controller->Login(username,password);
-}
-
-void MainWindow::on_RegistrButton_clicked()
-{
-    m_controller->createRegistrationWindow();
-}
-
-void MainWindow::setupConnetions(){
-    connect(m_controller, &AuthController::moneyWindowRequested,this, &MainWindow::createMoneyWindow);
-    connect(m_controller, &AuthController::registrationRequested,this, &MainWindow::createRegistrationWindow);
-}
-
 
 void MainWindow::createRegistrationWindow()
 {
-    RegistrWindow *regWindow = new RegistrWindow(m_controller->m_db);
+    RegistrWindow *regWindow = new RegistrWindow(m_controller);
     regWindow->setAttribute(Qt::WA_DeleteOnClose);
     regWindow->show();
 }
 
 void MainWindow::createMoneyWindow()
 {
-    MoneyWindow *window = new MoneyWindow(m_controller->m_currentUser,m_controller->m_db);
+    MoneyWindow *window = new MoneyWindow(m_controller);
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
+    this->close();
+}
+
+void MainWindow::showError(QString text){
+    ErrorWindow *err = new ErrorWindow();
+    err->showWindow(text);
 }
 

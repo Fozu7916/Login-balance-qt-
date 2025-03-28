@@ -2,8 +2,7 @@
 #define MONEYWINDOW_H
 
 #include <QMainWindow>
-#include "Users.h"
-#include "database.h"
+#include "authcontroller.h"
 #include <QSqlDatabase>
 
 namespace Ui {
@@ -15,7 +14,7 @@ class MoneyWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MoneyWindow(Users &user, DataBase &db, QWidget *parent = nullptr);
+    explicit MoneyWindow(AuthController* controller,QWidget *parent = nullptr);
     ~MoneyWindow();
     void updateDisplay(int amount);
     bool updateMoneyInDatabase(int newMoney);
@@ -29,8 +28,7 @@ private slots:
 
 private:
     Ui::MoneyWindow *ui;
-    Users *user;
-    DataBase &db;
+    AuthController* m_controller;
 };
 
 #endif // MONEYWINDOW_H
