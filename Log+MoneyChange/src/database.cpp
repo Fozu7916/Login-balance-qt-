@@ -6,6 +6,7 @@
 #include "Users.h"
 #include "errorwindow.h"
 #include "config.h"
+#include <QSqlError>
 
 DataBase::DataBase(QSqlDatabase db)
     :m_db(db)
@@ -24,7 +25,7 @@ QSqlDatabase DataBase::connectToMySQL()
 
     if (!m_db.open()) {
         ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка подключения к базе данных");
+        err->showWindow("Ошибка подключения к базе данных: " + m_db.lastError().text());
     }
     return m_db;
 }
@@ -33,9 +34,13 @@ std::vector<Users> DataBase::getUsersFromDatabase() {
     std::vector<Users> usersFromDb;
     QSqlQuery query(m_db);
 
-    if (!query.exec("SELECT Name, Hash_Password, Money FROM users")) {
+    // Используем подготовленный запрос с пустым условием
+    query.prepare("SELECT Name, Hash_Password, Money FROM users WHERE 1=1");
+
+    if (!query.exec()) {
         ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка: таблица пуста");
+        err->showWindow("Ошибка получения пользователей: " + query.lastError().text());
+        return usersFromDb;
     }
 
     while (query.next()) {
@@ -50,23 +55,34 @@ std::vector<Users> DataBase::getUsersFromDatabase() {
 }
 
 int DataBase::getMoneyFromUser(const QString& username) {
-    QSqlQuery query(m_db);
-    query.prepare("SELECT Money FROM users WHERE Name = ?");
-    query.addBindValue(username);
-    if (query.exec()) {
-        if (query.next()) {
-            bool ok;
-            return query.value(0).toInt(&ok);
-        }
-        else {
-            return -1;
-        }
-    }
-    else {
+    if (username.isEmpty()) {
         ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка запроса getMoneyFromUser");
+        err->showWindow("Ошибка: имя пользователя не может быть пустым");
         return -1;
     }
+
+    QSqlQuery query(m_db);
+    query.prepare("SELECT Money FROM users WHERE Name = :username");
+    query.bindValue(":username", username);
+
+    if (!query.exec()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка запроса getMoneyFromUser: " + query.lastError().text());
+        return -1;
+    }
+
+    if (query.next()) {
+        bool ok;
+        int money = query.value(0).toInt(&ok);
+        if (!ok) {
+            ErrorWindow *err = new ErrorWindow();
+            err->showWindow("Ошибка: некорректное значение денег в базе данных");
+            return -1;
+        }
+        return money;
+    }
+    
+    return -1;
 }
 
 bool DataBase::updateMoneyInDatabase(int newMoney, Users *user) {
@@ -76,14 +92,26 @@ bool DataBase::updateMoneyInDatabase(int newMoney, Users *user) {
         return false;
     }
 
+    if (!user || user->getName().isEmpty()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка: некорректные данные пользователя");
+        return false;
+    }
+
     QSqlQuery query(m_db);
-    query.prepare("UPDATE users SET money = ? WHERE Name = ?");
-    query.addBindValue(newMoney);
-    query.addBindValue(user->getName());
+    query.prepare("UPDATE users SET Money = :money WHERE Name = :username");
+    query.bindValue(":money", newMoney);
+    query.bindValue(":username", user->getName());
 
     if (!query.exec()) {
         ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка обновления баланса");
+        err->showWindow("Ошибка обновления баланса: " + query.lastError().text());
+        return false;
+    }
+
+    if (query.numRowsAffected() == 0) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка: пользователь не найден");
         return false;
     }
 
@@ -91,10 +119,16 @@ bool DataBase::updateMoneyInDatabase(int newMoney, Users *user) {
 }
 
 void DataBase::addUser(QString password, QString username) {
+    if (username.isEmpty() || password.isEmpty()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка: имя пользователя и пароль не могут быть пустыми");
+        return;
+    }
+
     QSqlQuery query(m_db);
-    query.prepare("INSERT INTO users (Name, Hash_Password, Money) VALUES (?, ?, 0)");
-    query.addBindValue(username);
-    query.addBindValue(password); 
+    query.prepare("INSERT INTO users (Name, Hash_Password, Money) VALUES (:username, :password, 0)");
+    query.bindValue(":username", username);
+    query.bindValue(":password", password);
 
     if (!query.exec()) {
         ErrorWindow *err = new ErrorWindow();

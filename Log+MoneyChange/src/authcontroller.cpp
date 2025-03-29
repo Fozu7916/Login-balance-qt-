@@ -3,6 +3,7 @@
 #include "Users.h"
 #include "database.h"
 #include <qdatetime.h>
+#include "hashutils.h"
 
 AuthController::AuthController(DataBase &db, QObject *parent)
     : QObject(parent), m_db(db) {}
@@ -10,8 +11,10 @@ AuthController::AuthController(DataBase &db, QObject *parent)
 
 void AuthController::login(QString username, QString password){
     std::vector<Users> users = m_db.getUsersFromDatabase();
+    QString hashedPassword = HashUtils::hashPassword(password);
+    
     for(auto& user : users) {
-        if(username == user.getName() && password == user.getPassword())
+        if(username == user.getName() && hashedPassword == user.getPassword())
         {
             double money = m_db.getMoneyFromUser(username);
             user.setMoney(money);
@@ -24,7 +27,7 @@ void AuthController::login(QString username, QString password){
     return;
 }
 
-void AuthController::reg(QString username,QString password,QString password2){
+void AuthController::reg(QString username, QString password, QString password2){
     if(password != password2) {
         emit error("Пароли не совпадают");
         return;
@@ -40,12 +43,12 @@ void AuthController::reg(QString username,QString password,QString password2){
     }
 
     if(userExists) {
-
         emit error("Пользователь с таким именем уже существует!");
         return;
     }
 
-    m_db.addUser(password,username);
+    QString hashedPassword = HashUtils::hashPassword(password);
+    m_db.addUser(hashedPassword, username);
 }
 
 
