@@ -12,9 +12,10 @@ public:
     DataBase(QSqlDatabase db);
     int getMoneyFromUser(const QString& username);
     QSqlDatabase connectToMySQL();
-    std::vector<Users> getUsersFromDatabase();
     bool updateMoneyInDatabase(int newMoney, Users *user);
     void addUser(QString password, QString username);
+    Users getUserByUsername(const QString& username);
+
 private:
     QSqlDatabase m_db;
 };

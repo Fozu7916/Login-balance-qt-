@@ -13,7 +13,6 @@ MoneyChange::MoneyChange(AuthController *controller,QWidget *parent)
 {
     ui->setupUi(this);
     connect(m_controller,&AuthController::error,this,&MoneyChange::showError);
-
 }
 
 MoneyChange::~MoneyChange()
@@ -22,17 +21,16 @@ MoneyChange::~MoneyChange()
 }
 
 void MoneyChange::on_ConfirmButton_clicked() {
-    m_controller->updateBalance(this->getFlag(),ui->MoneyEnter->text().toInt());
+    m_controller->updateBalance(this->getIsWithdrawal(),ui->MoneyEnter->text().toInt());
     close();
 }
 
-
-bool MoneyChange::getFlag(){
-    return flag;
+bool MoneyChange::getIsWithdrawal(){
+    return isWithdrawal;
 }
 
-void MoneyChange::setFlag(bool boolean){
-    flag = boolean;
+void MoneyChange::setIsWithdrawal(bool isWithdrawal){
+    this->isWithdrawal = isWithdrawal;
 }
 
 void MoneyChange::showError(QString text){

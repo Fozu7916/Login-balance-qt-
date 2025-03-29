@@ -26,18 +26,26 @@ endif()
 
 # ==================== Источники ====================
 set(PROJECT_SOURCES
-    src/main.cpp
-    
+    src/main.cpp src/hashutils.h 
+    src/changebackground.h src/changebackground.cpp
+
+    #controller
     src/controller/authcontroller.h src/controller/authcontroller.cpp
+
+    #view
     src/view/mainwindow.cpp src/view/mainwindow.ui src/view/mainwindow.h
     src/view/moneywindow.cpp src/view/moneywindow.h src/view/moneywindow.ui
-    src/model/Users.cpp src/model/Users.h
     src/view/errorwindow.cpp src/view/errorwindow.h src/view/errorwindow.ui
     src/view/moneychange.cpp src/view/moneychange.h src/view/moneychange.ui
-    src/changebackground.h src/changebackground.cpp
     src/view/registrwindow.h src/view/registrwindow.cpp src/view/registrwindow.ui
+
+    #model
+    src/model/Users.cpp src/model/Users.h
     src/model/database.h src/model/database.cpp
+
+    #resources
     resources/resources.qrc
+
 )
 
 # ==================== Исполняемый файл ====================
@@ -86,3 +94,4 @@ install(TARGETS Log+MoneyChange
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(Log+MoneyChange)
 endif()
+

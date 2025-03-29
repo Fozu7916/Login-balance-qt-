@@ -30,30 +30,6 @@ QSqlDatabase DataBase::connectToMySQL()
     return m_db;
 }
 
-std::vector<Users> DataBase::getUsersFromDatabase() {
-    std::vector<Users> usersFromDb;
-    QSqlQuery query(m_db);
-
-    // Используем подготовленный запрос с пустым условием
-    query.prepare("SELECT Name, Hash_Password, Money FROM users WHERE 1=1");
-
-    if (!query.exec()) {
-        ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка получения пользователей: " + query.lastError().text());
-        return usersFromDb;
-    }
-
-    while (query.next()) {
-        Users user;
-        user.setName(query.value(0).toString());
-        user.setPassword(query.value(1).toString());
-        user.setMoney(query.value(2).toInt());
-        usersFromDb.push_back(user);
-    }
-
-    return usersFromDb;
-}
-
 int DataBase::getMoneyFromUser(const QString& username) {
     if (username.isEmpty()) {
         ErrorWindow *err = new ErrorWindow();
@@ -119,12 +95,6 @@ bool DataBase::updateMoneyInDatabase(int newMoney, Users *user) {
 }
 
 void DataBase::addUser(QString password, QString username) {
-    if (username.isEmpty() || password.isEmpty()) {
-        ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка: имя пользователя и пароль не могут быть пустыми");
-        return;
-    }
-
     QSqlQuery query(m_db);
     query.prepare("INSERT INTO users (Name, Hash_Password, Money) VALUES (:username, :password, 0)");
     query.bindValue(":username", username);
@@ -135,6 +105,27 @@ void DataBase::addUser(QString password, QString username) {
         err->showWindow("Ошибка создания пользователя: " + query.lastError().text());
         return;
     }
+}
+
+Users DataBase::getUserByUsername(const QString& username) {
+    Users user;
+    QSqlQuery query(m_db);
+    query.prepare("SELECT Name, Hash_Password, Money FROM users WHERE Name = :username");
+    query.bindValue(":username", username);
+
+    if (!query.exec()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка запроса getUserByUsername: " + query.lastError().text());
+        return user;
+    }
+
+    if (query.next()) {
+        user.setName(query.value(0).toString());
+        user.setPassword(query.value(1).toString());
+        user.setMoney(query.value(2).toInt());
+    }
+
+    return user;
 }
 
 

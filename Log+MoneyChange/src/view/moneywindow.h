@@ -18,7 +18,7 @@ public:
     ~MoneyWindow();
     void updateDisplay(int amount);
     bool updateMoneyInDatabase(int newMoney);
-    void openNewWindow(bool flag,const QString& phrase);
+    void openNewWindow(bool isWithdrawal,const QString& phrase);
 
 
 

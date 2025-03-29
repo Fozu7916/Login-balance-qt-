@@ -1,7 +1,7 @@
 #ifndef AUTHCONTROLLER_H
 #define AUTHCONTROLLER_H
 
-#include <qmainwindow.h>
+#include <QMainWindow>
 #include <QObject>
 #include "../model/database.h"
 #include "../model/Users.h"
@@ -25,7 +25,7 @@ public slots:
     void login(QString username,QString password);
     void reg(QString username, QString password, QString password2);
     QString updateDisplay(int amount);
-    void updateBalance(bool flag,int amount);
+    void updateBalance(bool isWithdrawal, int amount);
 
 private:
     DataBase& m_db;

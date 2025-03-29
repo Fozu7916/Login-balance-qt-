@@ -7,45 +7,39 @@
 AuthController::AuthController(DataBase &db, QObject *parent)
     : QObject(parent), m_db(db) {}
 
+void AuthController::login(QString username, QString password) {
 
-void AuthController::login(QString username, QString password){
-    std::vector<Users> users = m_db.getUsersFromDatabase();
-    
-    for(auto& user : users) {
-        if(username == user.getName() && HashUtils::verifyPassword(password, user.getPassword())) {
-            double money = m_db.getMoneyFromUser(username);
-            user.setMoney(money);
-            m_currentUser = user;
-            emit moneyWindowRequested(m_currentUser);
-            return;
-        }
+    Users user = m_db.getUserByUsername(username);
+    if (user.getName().isEmpty()) {
+        emit error("Пользователь не найден");
+        return;
     }
-    emit error("Неверный логин или пароль");
-    return;
+
+    if (HashUtils::verifyPassword(password, user.getPassword())) {
+        m_currentUser = user;
+        emit moneyWindowRequested(m_currentUser);
+    } else {
+        emit error("Неверный пароль");
+    }
 }
 
-void AuthController::reg(QString username, QString password, QString password2){
-    if(password != password2) {
+
+void AuthController::reg(QString username, QString password, QString password2) {
+    if (password != password2) {
         emit error("Пароли не совпадают");
         return;
     }
 
-    bool userExists = false;
-    std::vector<Users> users = m_db.getUsersFromDatabase();
-    for(const auto& user : users) {
-        if(user.getName() == username) {
-            userExists = true;
-            break;
-        }
-    }
-
-    if(userExists) {
+    Users existingUser = m_db.getUserByUsername(username);
+    if (!existingUser.getName().isEmpty()) {
         emit error("Пользователь с таким именем уже существует!");
         return;
     }
 
     QString hashedPassword = HashUtils::hashPassword(password);
     m_db.addUser(hashedPassword, username);
+    
+    emit registrationRequested();
 }
 
 
@@ -69,9 +63,9 @@ QString AuthController::updateDisplay(int amount) {
 }
 
 
-void AuthController::updateBalance(bool flag,int amount){
+void AuthController::updateBalance(bool isWithdrawal,int amount){
     int balance = m_currentUser.getMoney();
-    if( flag and QString::number(amount).toInt() == amount)
+    if( isWithdrawal and QString::number(amount).toInt() == amount)
     {
         if (balance - amount < 0) {
             emit error("Недостаточно средств");
@@ -80,7 +74,7 @@ void AuthController::updateBalance(bool flag,int amount){
         m_currentUser.setMoney(balance - amount);
         emit moneyChanged(-1 * amount);
     }
-    else if( !flag and  QString::number(amount).toInt() == amount and amount + balance <= INT_MAX)
+    else if( !isWithdrawal and  QString::number(amount).toInt() == amount and amount + balance <= INT_MAX)
     {
         m_currentUser.setMoney(balance + amount);
         emit moneyChanged(amount);

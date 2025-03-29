@@ -41,11 +41,11 @@ void MoneyWindow::updateDisplay(int amount) {
 }
 
 
-void MoneyWindow::openNewWindow(bool flag,const QString& phrase) {
+void MoneyWindow::openNewWindow(bool isWithdrawal,const QString& phrase) {
     MoneyChange *change = new MoneyChange(m_controller);
     connect(m_controller, &AuthController::moneyChanged, this, &MoneyWindow::updateDisplay);
     changebackground(change,":/images/2nd background.jpg");
-    change->setFlag(flag);
+    change->setIsWithdrawal(isWithdrawal);
     change->setWindowTitle(phrase);
     change->setAttribute(Qt::WA_DeleteOnClose);
     change->show();

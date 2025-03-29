@@ -23,9 +23,7 @@ RegistrWindow::~RegistrWindow()
 
 void RegistrWindow::on_pushButton_clicked()
 {
-    QString password = ui->PasEdit->text();
-    QString password2 = ui->PasEdit_2->text();
-    m_controller->reg(ui->NameEdit->text(), password, password2);
+    m_controller->reg(ui->NameEdit->text(), ui->PasEdit->text(), ui->PasEdit_2->text());
 }
 
 void RegistrWindow::showError(QString text){

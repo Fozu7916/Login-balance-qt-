@@ -18,8 +18,8 @@ signals:
 public:
     explicit MoneyChange(AuthController* controller,QWidget *parent = nullptr);
     ~MoneyChange();
-    bool getFlag();
-    void setFlag(bool boolean);
+    bool getIsWithdrawal();
+    void setIsWithdrawal(bool isWithdrawal);
     void showError(QString text);
 
 
@@ -31,7 +31,7 @@ private:
     Ui::MoneyChange *ui;
     Users *user;
     AuthController* m_controller;
-    bool flag;
+    bool isWithdrawal;
 };
 
 #endif // MONEYCHANGE_H
