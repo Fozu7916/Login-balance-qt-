@@ -1,5 +1,5 @@
 #include "changebackground.h"
-#include "errorwindow.h"
+#include "view/errorwindow.h"
 #include <QPixmap>
 #include <QPalette>
 #include <QBrush>

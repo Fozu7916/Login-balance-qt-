@@ -2,8 +2,8 @@
 #define MONEYCHANGE_H
 
 #include <QMainWindow>
-#include "Users.h"
-#include "authcontroller.h"
+#include "../model/Users.h"
+#include "../controller/authcontroller.h"
 
 namespace Ui {
 class MoneyChange;

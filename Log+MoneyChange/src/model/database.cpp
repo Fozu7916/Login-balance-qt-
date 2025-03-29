@@ -4,8 +4,8 @@
 #include <qsqlerror.h>
 #include <qsqlquery.h>
 #include "Users.h"
-#include "errorwindow.h"
-#include "config.h"
+#include "../view/errorwindow.h"
+#include "../config.h"
 #include <QSqlError>
 
 DataBase::DataBase(QSqlDatabase db)

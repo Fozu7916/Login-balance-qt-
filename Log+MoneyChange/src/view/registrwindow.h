@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <qsqldatabase.h>
-#include "authcontroller.h"
+#include "../controller/authcontroller.h"
 
 namespace Ui {
 class RegistrWindow;

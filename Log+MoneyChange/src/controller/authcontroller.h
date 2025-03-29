@@ -3,10 +3,8 @@
 
 #include <qmainwindow.h>
 #include <QObject>
-#include <QWidget>
-#include "database.h"
-#include "Users.h"
-#include <QString>
+#include "../model/database.h"
+#include "../model/Users.h"
 
 class AuthController : public QObject
 {

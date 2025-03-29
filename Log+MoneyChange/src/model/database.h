@@ -4,6 +4,7 @@
 #include <QSqlDatabase>
 #include <QString>
 #include "Users.h"
+#include <vector>
 
 class DataBase
 {

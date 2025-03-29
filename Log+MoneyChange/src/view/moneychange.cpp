@@ -1,8 +1,8 @@
 //moneychange.cpp
 #include "moneychange.h"
-#include "authcontroller.h"
+#include "../controller/authcontroller.h"
 #include "errorwindow.h"
-#include "ui_moneychange.h"
+#include "./ui_moneychange.h"
 #include <QString>
 #include <qregularexpression.h>
 

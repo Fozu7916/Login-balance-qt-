@@ -1,9 +1,8 @@
 #include "authcontroller.h"
-#include "database.h"
-#include "Users.h"
-#include "database.h"
+#include "../model/database.h"
+#include "../model/Users.h"
 #include <qdatetime.h>
-#include "hashutils.h"
+#include "../hashutils.h"
 
 AuthController::AuthController(DataBase &db, QObject *parent)
     : QObject(parent), m_db(db) {}
@@ -11,11 +10,9 @@ AuthController::AuthController(DataBase &db, QObject *parent)
 
 void AuthController::login(QString username, QString password){
     std::vector<Users> users = m_db.getUsersFromDatabase();
-    QString hashedPassword = HashUtils::hashPassword(password);
     
     for(auto& user : users) {
-        if(username == user.getName() && hashedPassword == user.getPassword())
-        {
+        if(username == user.getName() && HashUtils::verifyPassword(password, user.getPassword())) {
             double money = m_db.getMoneyFromUser(username);
             user.setMoney(money);
             m_currentUser = user;
