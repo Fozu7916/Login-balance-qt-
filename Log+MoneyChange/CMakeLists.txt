@@ -27,14 +27,16 @@ endif()
 # ==================== Источники ====================
 set(PROJECT_SOURCES
     src/main.cpp
-    src/mainwindow.cpp src/mainwindow.ui src/mainwindow.h
-    src/moneywindow.cpp src/moneywindow.h src/moneywindow.ui
-    src/Users.cpp src/Users.h
-    src/errorwindow.cpp src/errorwindow.h src/errorwindow.ui
-    src/moneychange.cpp src/moneychange.h src/moneychange.ui
+    
+    src/controller/authcontroller.h src/controller/authcontroller.cpp
+    src/view/mainwindow.cpp src/view/mainwindow.ui src/view/mainwindow.h
+    src/view/moneywindow.cpp src/view/moneywindow.h src/view/moneywindow.ui
+    src/model/Users.cpp src/model/Users.h
+    src/view/errorwindow.cpp src/view/errorwindow.h src/view/errorwindow.ui
+    src/view/moneychange.cpp src/view/moneychange.h src/view/moneychange.ui
     src/changebackground.h src/changebackground.cpp
-    src/registrwindow.h src/registrwindow.cpp src/registrwindow.ui
-    src/database.h src/database.cpp
+    src/view/registrwindow.h src/view/registrwindow.cpp src/view/registrwindow.ui
+    src/model/database.h src/model/database.cpp
     resources/resources.qrc
 )
 
@@ -42,7 +44,6 @@ set(PROJECT_SOURCES
 qt_add_executable(Log+MoneyChange
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    src/authcontroller.h src/authcontroller.cpp
 
 
 )
