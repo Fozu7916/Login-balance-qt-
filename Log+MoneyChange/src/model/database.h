@@ -15,7 +15,7 @@ public:
     bool updateMoneyInDatabase(int newMoney, Users *user);
     void addUser(QString password, QString username);
     Users getUserByUsername(const QString& username);
-
+    void updateTransaction(const QString& username, const QString& operation, int amount, int balance, const QString& datetime);
 private:
     QSqlDatabase m_db;
 };

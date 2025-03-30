@@ -1,7 +1,6 @@
 #ifndef AUTHCONTROLLER_H
 #define AUTHCONTROLLER_H
 
-#include <QMainWindow>
 #include <QObject>
 #include "../model/database.h"
 #include "../model/Users.h"

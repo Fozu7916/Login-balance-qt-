@@ -1,8 +1,11 @@
 #include <QTest>
 #include <QSignalSpy>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include "../src/controller/authcontroller.h"
-#include "../src/view/errorwindow.h"
+#include "../src/model/database.h"
 
+// Объявляем класс тестов
 class TestAuthController : public QObject
 {
     Q_OBJECT
@@ -17,6 +20,7 @@ private slots:
 private:
     AuthController* m_controller;
     QSqlDatabase m_db;
+    DataBase* m_database;
 };
 
 void TestAuthController::initTestCase()
@@ -28,10 +32,11 @@ void TestAuthController::initTestCase()
 
     // Создание таблицы
     QSqlQuery query;
-    query.exec("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "name TEXT UNIQUE, password TEXT, balance INTEGER DEFAULT 0)");
+    QVERIFY(query.exec("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                      "Name TEXT UNIQUE, Hash_Password TEXT, Money INTEGER DEFAULT 0)"));
 
-    m_controller = new AuthController();
+    m_database = new DataBase(m_db);
+    m_controller = new AuthController(*m_database);
 }
 
 void TestAuthController::testRegistration()
@@ -39,13 +44,13 @@ void TestAuthController::testRegistration()
     QSignalSpy errorSpy(m_controller, &AuthController::error);
     
     // Тест успешной регистрации
-    m_controller->registerUser("testuser", "testpass");
+    m_controller->reg("testuser", "testpass", "testpass");
     QSqlQuery query;
-    query.exec("SELECT * FROM users WHERE name = 'testuser'");
+    QVERIFY(query.exec("SELECT * FROM users WHERE Name = 'testuser'"));
     QVERIFY(query.next());
     
     // Тест дублирования пользователя
-    m_controller->registerUser("testuser", "testpass");
+    m_controller->reg("testuser", "testpass", "testpass");
     QCOMPARE(errorSpy.count(), 1);
 }
 
@@ -66,30 +71,34 @@ void TestAuthController::testLogin()
 void TestAuthController::testUpdateBalance()
 {
     QSignalSpy errorSpy(m_controller, &AuthController::error);
+    QSignalSpy moneyChangedSpy(m_controller, &AuthController::moneyChanged);
     
     // Тест пополнения баланса
-    m_controller->updateBalance(100, false);
+    m_controller->updateBalance(false, 100);
     QSqlQuery query;
-    query.exec("SELECT balance FROM users WHERE name = 'testuser'");
-    query.next();
+    QVERIFY(query.exec("SELECT Money FROM users WHERE Name = 'testuser'"));
+    QVERIFY(query.next());
     QCOMPARE(query.value(0).toInt(), 100);
+    QCOMPARE(moneyChangedSpy.count(), 1);
     
     // Тест снятия средств
-    m_controller->updateBalance(50, true);
-    query.exec("SELECT balance FROM users WHERE name = 'testuser'");
-    query.next();
+    m_controller->updateBalance(true, 50);
+    QVERIFY(query.exec("SELECT Money FROM users WHERE Name = 'testuser'"));
+    QVERIFY(query.next());
     QCOMPARE(query.value(0).toInt(), 50);
+    QCOMPARE(moneyChangedSpy.count(), 2);
     
     // Тест снятия больше баланса
-    m_controller->updateBalance(100, true);
+    m_controller->updateBalance(true, 100);
     QCOMPARE(errorSpy.count(), 1);
 }
 
 void TestAuthController::cleanupTestCase()
 {
     delete m_controller;
+    delete m_database;
     m_db.close();
 }
 
 QTEST_MAIN(TestAuthController)
-#include "test_auth_controller.moc" 
+#include "test_auth_controller.moc"

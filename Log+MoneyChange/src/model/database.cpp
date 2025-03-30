@@ -1,6 +1,7 @@
 #include "database.h"
 #include <QSqlDatabase>
 #include <QString>
+#include <qdatetime.h>
 #include <qsqlerror.h>
 #include <qsqlquery.h>
 #include "Users.h"
@@ -26,6 +27,7 @@ QSqlDatabase DataBase::connectToMySQL()
     if (!m_db.open()) {
         ErrorWindow *err = new ErrorWindow();
         err->showWindow("Ошибка подключения к базе данных: " + m_db.lastError().text());
+
     }
     return m_db;
 }
@@ -128,6 +130,17 @@ Users DataBase::getUserByUsername(const QString& username) {
     return user;
 }
 
+void DataBase::updateTransaction(const QString& username, const QString& operation, int amount, int balance, const QString& datetime) {
+    QSqlQuery query(m_db);
+    query.prepare("INSERT INTO history (username, operation, amount, balance, data) "
+                 "VALUES (:username, :operation, :amount, :balance, DATE(:data))");
+    query.bindValue(":username", username);
+    query.bindValue(":operation", operation);
+    query.bindValue(":amount", amount);
+    query.bindValue(":balance", balance);
+    query.bindValue(":data", QDate::fromString(datetime, "yyyy-MM-dd"));
 
-
-
+    if (!query.exec()) {
+       // showError("Ошибка сохранения транзакции: " + query.lastError().text());
+    }
+}
