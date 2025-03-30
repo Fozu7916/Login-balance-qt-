@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 16.0.0, 2025-03-30T15:25:26. -->
+<!-- Written by QtCreator 16.0.0, 2025-03-30T15:30:38. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -71,10 +71,7 @@
     <value type="bool" key="AutoTest.Framework.QtTest">true</value>
    </valuemap>
    <value type="bool" key="AutoTest.ApplyFilter">false</value>
-   <valuemap type="QVariantMap" key="AutoTest.CheckStates">
-    <value type="Qt::CheckState" key="1@C:/Users/MSI/Documents/GitHub/Login-balance-qt-/Log+MoneyChange/tests/test_auth_controller.cpp:cleanupTestCase">Unchecked</value>
-    <value type="Qt::CheckState" key="1@C:/Users/MSI/Documents/GitHub/Login-balance-qt-/Log+MoneyChange/tests/test_auth_controller.cpp:initTestCase">Unchecked</value>
-   </valuemap>
+   <valuemap type="QVariantMap" key="AutoTest.CheckStates"/>
    <valuelist type="QVariantList" key="AutoTest.PathFilters"/>
    <value type="int" key="AutoTest.RunAfterBuild">0</value>
    <value type="bool" key="AutoTest.UseGlobal">true</value>

@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include "../controller/authcontroller.h"
-#include <QSqlDatabase>
 
 namespace Ui {
 class MoneyWindow;
@@ -19,8 +18,6 @@ public:
     void updateDisplay(int amount);
     bool updateMoneyInDatabase(int newMoney);
     void openNewWindow(bool isWithdrawal,const QString& phrase);
-
-
 
 private slots:
     void on_AddButton_clicked();

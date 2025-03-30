@@ -1,8 +1,8 @@
 #include "authcontroller.h"
 #include "../model/database.h"
 #include "../model/Users.h"
-#include <qdatetime.h>
 #include "../hashutils.h"
+#include <qdatetime.h>
 
 AuthController::AuthController(DataBase &db, QObject *parent)
     : QObject(parent), m_db(db) {}

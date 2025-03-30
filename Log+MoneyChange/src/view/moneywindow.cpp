@@ -2,13 +2,10 @@
 #include "moneywindow.h"
 #include "ui_moneywindow.h"
 #include "moneychange.h"
-#include "../controller/authcontroller.h"
 #include "../model/Users.h"
 #include <QListWidgetItem>
 #include <QString>
 #include <QDateTime>
-#include <qsqlerror.h>
-#include <qsqlquery.h>
 #include "../changebackground.h"
 
 MoneyWindow::MoneyWindow(AuthController *controller, QWidget *parent)
@@ -26,7 +23,6 @@ MoneyWindow::~MoneyWindow()
     delete ui;
 }
 
-
 void MoneyWindow::on_AddButton_clicked() {
     MoneyWindow::openNewWindow(false,"Пополнить");
 }
@@ -39,7 +35,6 @@ void MoneyWindow::updateDisplay(int amount) {
     ui->HistoryView->addItem(m_controller->updateDisplay(amount));
     ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
 }
-
 
 void MoneyWindow::openNewWindow(bool isWithdrawal,const QString& phrase) {
     MoneyChange *change = new MoneyChange(m_controller);

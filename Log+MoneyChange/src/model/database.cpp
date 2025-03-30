@@ -1,13 +1,13 @@
-#include "database.h"
+#include <QSqlError>
 #include <QSqlDatabase>
 #include <QString>
 #include <qdatetime.h>
 #include <qsqlerror.h>
 #include <qsqlquery.h>
 #include "Users.h"
+#include "database.h"
 #include "../view/errorwindow.h"
 #include "../config.h"
-#include <QSqlError>
 
 DataBase::DataBase(QSqlDatabase db)
     :m_db(db)
@@ -17,18 +17,40 @@ DataBase::DataBase(QSqlDatabase db)
 QSqlDatabase DataBase::connectToMySQL()
 {
     m_db = QSqlDatabase::addDatabase("QMYSQL");
-
-    m_db.setHostName(Config::DB_HOST);
-    m_db.setPort(Config::DB_PORT);
-    m_db.setDatabaseName(Config::DB_NAME);
-    m_db.setUserName(Config::DB_USER);
-    m_db.setPassword(Config::DB_PASSWORD);
+    m_db.setHostName("localhost");
+    m_db.setDatabaseName("login_balance");
+    m_db.setUserName("root");
+    m_db.setPassword("root");
 
     if (!m_db.open()) {
         ErrorWindow *err = new ErrorWindow();
         err->showWindow("Ошибка подключения к базе данных: " + m_db.lastError().text());
-
+        return m_db;
     }
+
+    QSqlQuery query(m_db);
+    
+    // Создаем таблицу users если её нет
+    query.exec("CREATE TABLE IF NOT EXISTS users ("
+               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+               "Name TEXT UNIQUE, "
+               "Hash_Password TEXT, "
+               "Money INTEGER DEFAULT 0)");
+
+    // Создаем таблицу history если её нет
+    query.exec("CREATE TABLE IF NOT EXISTS history ("
+               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+               "username TEXT, "
+               "operation TEXT, "
+               "amount INTEGER, "
+               "balance INTEGER, "
+               "data DATE)");
+
+    // Создаем индексы для оптимизации запросов
+    query.exec("CREATE INDEX IF NOT EXISTS idx_history_username ON history(username)");
+    query.exec("CREATE INDEX IF NOT EXISTS idx_history_data ON history(data)");
+    query.exec("CREATE INDEX IF NOT EXISTS idx_history_operation ON history(operation)");
+
     return m_db;
 }
 
@@ -131,9 +153,15 @@ Users DataBase::getUserByUsername(const QString& username) {
 }
 
 void DataBase::updateTransaction(const QString& username, const QString& operation, int amount, int balance, const QString& datetime) {
-    QSqlQuery query(m_db);
-    query.prepare("INSERT INTO history (username, operation, amount, balance, data) "
-                 "VALUES (:username, :operation, :amount, :balance, DATE(:data))");
+    static QSqlQuery query(m_db);
+    static bool prepared = false;
+    
+    if (!prepared) {
+        query.prepare("INSERT INTO history (username, operation, amount, balance, data) "
+                     "VALUES (:username, :operation, :amount, :balance, DATE(:data))");
+        prepared = true;
+    }
+    
     query.bindValue(":username", username);
     query.bindValue(":operation", operation);
     query.bindValue(":amount", amount);
@@ -141,6 +169,6 @@ void DataBase::updateTransaction(const QString& username, const QString& operati
     query.bindValue(":data", QDate::fromString(datetime, "yyyy-MM-dd"));
 
     if (!query.exec()) {
-       // showError("Ошибка сохранения транзакции: " + query.lastError().text());
+        // showError("Ошибка сохранения транзакции: " + query.lastError().text());
     }
 }

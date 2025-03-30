@@ -5,7 +5,7 @@
 #include "../src/controller/authcontroller.h"
 #include "../src/model/database.h"
 
-// Объявляем класс тестов
+
 class TestAuthController : public QObject
 {
     Q_OBJECT
@@ -25,12 +25,10 @@ private:
 
 void TestAuthController::initTestCase()
 {
-    // Подготовка тестовой базы данных
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     m_db.setDatabaseName(":memory:");
     QVERIFY(m_db.open());
 
-    // Создание таблицы
     QSqlQuery query;
     QVERIFY(query.exec("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, "
                       "Name TEXT UNIQUE, Hash_Password TEXT, Money INTEGER DEFAULT 0)"));

@@ -1,11 +1,11 @@
 // users.cpp
-#include "users.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QDebug>
 #include <QString>
 #include <QList>
 #include <qsqlerror.h>
+#include "users.h"
 
 Users::Users(QString first, QString second)
 {
