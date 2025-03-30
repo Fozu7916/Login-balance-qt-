@@ -30,14 +30,13 @@ QSqlDatabase DataBase::connectToMySQL()
 
     QSqlQuery query(m_db);
     
-    // Создаем таблицу users если её нет
     query.exec("CREATE TABLE IF NOT EXISTS users ("
                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                "Name TEXT UNIQUE, "
                "Hash_Password TEXT, "
                "Money INTEGER DEFAULT 0)");
 
-    // Создаем таблицу history если её нет
+    
     query.exec("CREATE TABLE IF NOT EXISTS history ("
                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                "username TEXT, "
