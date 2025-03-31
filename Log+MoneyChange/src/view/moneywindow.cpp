@@ -16,8 +16,8 @@ MoneyWindow::MoneyWindow(AuthController *controller, QWidget *parent)
     ui->setupUi(this);
     ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
     setWindowTitle(m_controller->getUser().getName());
-    
-    // Подключаем сигнал moneyChanged к слоту updateDisplay один раз при создании окна
+    changebackground(this, ":/images/2nd background.jpg");
+
     connect(m_controller, &AuthController::moneyChanged, this, &MoneyWindow::updateDisplay);
     loadTransactionHistory();
 }
@@ -48,7 +48,7 @@ void MoneyWindow::updateDisplay(int amount) {
     QString transaction = m_controller->updateDisplay(amount);
     if (transaction != "ERROR!") {
         ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
-        loadTransactionHistory(); // Перезагружаем историю после обновления
+        loadTransactionHistory();
     }
 }
 
