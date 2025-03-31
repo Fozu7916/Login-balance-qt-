@@ -165,7 +165,11 @@ QList<QString> DataBase::getTransactionHistory(const QString& username) {
     QList<QString> history;
     QSqlQuery query(m_db);
     
-    query.prepare("SELECT data, operation, amount, balance FROM history WHERE username = :username ORDER BY data DESC");
+    // Получаем 10 последних транзакций, отсортированных по дате в обратном порядке
+    query.prepare("SELECT data, operation, amount, balance FROM history "
+                 "WHERE username = :username "
+                 "ORDER BY data DESC "
+                 "LIMIT 10");
     query.bindValue(":username", username);
     
     if (!query.exec()) {

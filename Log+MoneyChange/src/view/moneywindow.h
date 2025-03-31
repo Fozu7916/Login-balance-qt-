@@ -22,6 +22,7 @@ public:
 private slots:
     void on_AddButton_clicked();
     void on_RemoveButton_clicked();
+    void loadTransactionHistory();
 
 private:
     Ui::MoneyWindow *ui;

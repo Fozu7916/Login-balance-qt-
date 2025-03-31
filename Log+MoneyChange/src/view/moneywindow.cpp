@@ -16,11 +16,24 @@ MoneyWindow::MoneyWindow(AuthController *controller, QWidget *parent)
     ui->setupUi(this);
     ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
     setWindowTitle(m_controller->getUser().getName());
+    
+    // Подключаем сигнал moneyChanged к слоту updateDisplay один раз при создании окна
+    connect(m_controller, &AuthController::moneyChanged, this, &MoneyWindow::updateDisplay);
+    loadTransactionHistory();
 }
 
 MoneyWindow::~MoneyWindow()
 {
     delete ui;
+}
+
+void MoneyWindow::loadTransactionHistory() {
+    ui->HistoryView->clear();
+    QList<QString> history = m_controller->getTransactionHistory();
+    // Добавляем транзакции в обратном порядке (самые новые сверху)
+    for (const QString& transaction : history) {
+        ui->HistoryView->addItem(transaction);
+    }
 }
 
 void MoneyWindow::on_AddButton_clicked() {
@@ -32,13 +45,15 @@ void MoneyWindow::on_RemoveButton_clicked() {
 }
 
 void MoneyWindow::updateDisplay(int amount) {
-    ui->HistoryView->addItem(m_controller->updateDisplay(amount));
-    ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
+    QString transaction = m_controller->updateDisplay(amount);
+    if (transaction != "ERROR!") {
+        ui->MoneyLabel->setText(QString::number(m_controller->getUser().getMoney()));
+        loadTransactionHistory(); // Перезагружаем историю после обновления
+    }
 }
 
 void MoneyWindow::openNewWindow(bool isWithdrawal,const QString& phrase) {
     MoneyChange *change = new MoneyChange(m_controller);
-    connect(m_controller, &AuthController::moneyChanged, this, &MoneyWindow::updateDisplay);
     changebackground(change,":/images/2nd background.jpg");
     change->setIsWithdrawal(isWithdrawal);
     change->setWindowTitle(phrase);
