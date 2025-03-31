@@ -18,7 +18,7 @@ QSqlDatabase DataBase::connectToMySQL()
 {
     m_db = QSqlDatabase::addDatabase("QMYSQL");
     m_db.setHostName("localhost");
-    m_db.setDatabaseName("login_balance");
+    m_db.setDatabaseName("users");
     m_db.setUserName("root");
     m_db.setPassword("root");
 
@@ -30,20 +30,7 @@ QSqlDatabase DataBase::connectToMySQL()
 
     QSqlQuery query(m_db);
     
-    query.exec("CREATE TABLE IF NOT EXISTS users ("
-               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "Name TEXT UNIQUE, "
-               "Hash_Password TEXT, "
-               "Money INTEGER DEFAULT 0)");
 
-    
-    query.exec("CREATE TABLE IF NOT EXISTS history ("
-               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "username TEXT, "
-               "operation TEXT, "
-               "amount INTEGER, "
-               "balance INTEGER, "
-               "data DATE)");
 
     // Создаем индексы для оптимизации запросов
     query.exec("CREATE INDEX IF NOT EXISTS idx_history_username ON history(username)");
@@ -157,7 +144,7 @@ void DataBase::updateTransaction(const QString& username, const QString& operati
     
     if (!prepared) {
         query.prepare("INSERT INTO history (username, operation, amount, balance, data) "
-                     "VALUES (:username, :operation, :amount, :balance, DATE(:data))");
+                     "VALUES (:username, :operation, :amount, :balance, :data)");
         prepared = true;
     }
     
@@ -165,9 +152,37 @@ void DataBase::updateTransaction(const QString& username, const QString& operati
     query.bindValue(":operation", operation);
     query.bindValue(":amount", amount);
     query.bindValue(":balance", balance);
-    query.bindValue(":data", QDate::fromString(datetime, "yyyy-MM-dd"));
+    query.bindValue(":data", datetime);
 
     if (!query.exec()) {
-        // showError("Ошибка сохранения транзакции: " + query.lastError().text());
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка сохранения транзакции: " + query.lastError().text());
     }
+}
+
+
+QList<QString> DataBase::getTransactionHistory(const QString& username) {
+    QList<QString> history;
+    QSqlQuery query(m_db);
+    
+    query.prepare("SELECT data, operation, amount, balance FROM history WHERE username = :username ORDER BY data DESC");
+    query.bindValue(":username", username);
+    
+    if (!query.exec()) {
+        ErrorWindow *err = new ErrorWindow();
+        err->showWindow("Ошибка получения истории транзакций: " + query.lastError().text());
+        return history;
+    }
+    
+    while (query.next()) {
+        QString dateTime = query.value(0).toString();
+        QString operation = query.value(1).toString();
+        int amount = query.value(2).toInt();
+        int balance = query.value(3).toInt();
+        
+        QString transaction = dateTime + operation + QString::number(amount) + " Текущий баланс: " + QString::number(balance);
+        history.append(transaction);
+    }
+    
+    return history;
 }

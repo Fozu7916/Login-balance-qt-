@@ -25,7 +25,7 @@ public slots:
     void reg(QString username, QString password, QString password2);
     QString updateDisplay(int amount);
     void updateBalance(bool isWithdrawal, int amount);
-
+    QList<QString> getTransactionHistory() const;
 private:
     DataBase& m_db;
     Users m_currentUser;

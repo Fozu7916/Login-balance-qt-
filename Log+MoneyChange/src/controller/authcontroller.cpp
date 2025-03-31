@@ -54,13 +54,9 @@ QString AuthController::updateDisplay(int amount) {
         operation = " Снятие: ";
     }
     transaction = dateTimeString + operation + QString::number(amount) + " Текущий баланс: " + QString::number(m_currentUser.getMoney());
+    
     m_db.updateTransaction(m_currentUser.getName(),operation,amount,m_currentUser.getMoney(),dateTimeString);
-    if (!m_db.updateMoneyInDatabase(m_currentUser.getMoney(),&m_currentUser)) {
-        return "ERROR!";
-    }
-    else{
-        return transaction;
-    }
+    return transaction;
 }
 
 
@@ -94,3 +90,6 @@ void AuthController::updateBalance(bool isWithdrawal,int amount){
     }
 }
 
+QList<QString> AuthController::getTransactionHistory() const {
+    return m_db.getTransactionHistory(m_currentUser.getName());
+}
