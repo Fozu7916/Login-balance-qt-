@@ -23,6 +23,7 @@ RegistrWindow::~RegistrWindow()
 void RegistrWindow::on_pushButton_clicked()
 {
     m_controller->reg(ui->NameEdit->text(), ui->PasEdit->text(), ui->PasEdit_2->text());
+    this->close();
 }
 
 void RegistrWindow::showError(QString text){

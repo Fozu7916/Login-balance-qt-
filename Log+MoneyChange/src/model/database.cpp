@@ -57,14 +57,7 @@ int DataBase::getMoneyFromUser(const QString &username)
 
     if (query.next())
     {
-        bool ok;
-        int money = query.value(0).toInt(&ok);
-        if (!ok)
-        {
-            ErrorWindow *err = new ErrorWindow();
-            err->showWindow("Ошибка: некорректное значение денег в базе данных");
-            return -1;
-        }
+        int money = query.value(0).toInt();
         return money;
     }
 
@@ -73,20 +66,6 @@ int DataBase::getMoneyFromUser(const QString &username)
 
 bool DataBase::updateMoneyInDatabase(int newMoney, Users *user)
 {
-    if (!m_db.isOpen())
-    {
-        ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка: база данных не открыта в updateMoneyInDatabase");
-        return false;
-    }
-
-    if (!user || user->getName().isEmpty())
-    {
-        ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка: некорректные данные пользователя");
-        return false;
-    }
-
     QSqlQuery query(m_db);
     query.prepare("UPDATE users SET Money = :money WHERE Name = :username");
     query.bindValue(":money", newMoney);
@@ -98,14 +77,7 @@ bool DataBase::updateMoneyInDatabase(int newMoney, Users *user)
         err->showWindow("Ошибка обновления баланса: " + query.lastError().text());
         return false;
     }
-
-    if (query.numRowsAffected() == 0)
-    {
-        ErrorWindow *err = new ErrorWindow();
-        err->showWindow("Ошибка: пользователь не найден");
-        return false;
-    }
-
+    
     return true;
 }
 

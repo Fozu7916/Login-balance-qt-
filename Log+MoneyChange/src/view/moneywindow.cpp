@@ -60,5 +60,3 @@ void MoneyWindow::openNewWindow(bool isWithdrawal,const QString& phrase) {
     change->setAttribute(Qt::WA_DeleteOnClose);
     change->show();
 }
-
-

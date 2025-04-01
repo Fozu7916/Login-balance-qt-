@@ -14,8 +14,8 @@ void AuthController::connectToErrorSignal(QObject* receiver, const char* method)
     connect(this, SIGNAL(error(QString)), receiver, method);
 }
  
-void AuthController::connectToMoneyChangedSignal(QObject* receiver, const char* method){
-    connect(this, SIGNAL(moneyChanged(int)), receiver, method);
+void AuthController::connectToMoneyChangedSignal(QObject* receiver, const char* slot) {
+    connect(this, SIGNAL(moneyChanged(int)), receiver, slot);
 }
 
 void AuthController::connectToMoneyWindowRequestedSignal(QObject* receiver, const char* method) {
@@ -27,15 +27,16 @@ void AuthController::login(QString username, QString password) {
 
     Users user = m_db.getUserByUsername(username);
     if (user.getName().isEmpty()) {
-        emit error("Пользователь не найден");
+        emit error("Неверный логин или пароль");
         return;
     }
 
     if (HashUtils::verifyPassword(password, user.getPassword())) {
         m_currentUser = user;
         emit moneyWindowRequested(m_currentUser);
-    } else {
-        emit error("Неверный пароль");
+    } 
+    else {
+    return;
     }
 }
 
@@ -102,7 +103,7 @@ void AuthController::updateBalance(bool isWithdrawal,int amount){
     }
     else
     {
-       emit error("Неверное введёное значение");
+       emit error("Неверное введёное значение(либо введены не цифры, либо итоговый баланс превыщает значение int)");
     }
 }
 
