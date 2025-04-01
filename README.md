@@ -7,11 +7,8 @@
 Проект построен на паттерне MVC (Model-View-Controller):
 
 ### Model
-- База данных MySql для хранения данных пользователей
-- Таблица users содержит:
-  - name (varchar(255) UNIQUE)
-  - password (varchar(255))
-  - balance (INTEGER)
+-Users класс
+-DataBase класс
 
 ### View
 - MainWindow - главное окно с формой входа
