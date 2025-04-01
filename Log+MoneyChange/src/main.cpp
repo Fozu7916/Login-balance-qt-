@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QSqlDatabase>
 #include <QPluginLoader>
+#include "model/database.h"
+#include "controller/authcontroller.h"
 
 
 int main(int argc, char *argv[])

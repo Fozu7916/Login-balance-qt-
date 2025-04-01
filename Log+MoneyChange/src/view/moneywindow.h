@@ -2,7 +2,7 @@
 #define MONEYWINDOW_H
 
 #include <QMainWindow>
-#include "../controller/authcontroller.h"
+#include "../controller/iauthcontroller.h"
 
 namespace Ui {
 class MoneyWindow;
@@ -13,20 +13,20 @@ class MoneyWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MoneyWindow(AuthController* controller,QWidget *parent = nullptr);
+    explicit MoneyWindow(IAuthController* controller,QWidget *parent = nullptr);
     ~MoneyWindow();
+
     void updateDisplay(int amount);
-    bool updateMoneyInDatabase(int newMoney);
+    void loadTransactionHistory();
     void openNewWindow(bool isWithdrawal,const QString& phrase);
 
 private slots:
     void on_AddButton_clicked();
     void on_RemoveButton_clicked();
-    void loadTransactionHistory();
 
 private:
     Ui::MoneyWindow *ui;
-    AuthController* m_controller;
+    IAuthController* m_controller;
 };
 
 #endif // MONEYWINDOW_H

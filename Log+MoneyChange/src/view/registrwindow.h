@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <qsqldatabase.h>
-#include "../controller/authcontroller.h"
+#include "../controller/iauthcontroller.h"
 
 namespace Ui {
 class RegistrWindow;
@@ -14,7 +14,7 @@ class RegistrWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit RegistrWindow(AuthController* controller, QWidget *parent = nullptr);
+    explicit RegistrWindow(IAuthController* controller, QWidget *parent = nullptr);
     ~RegistrWindow();
 
 private slots:
@@ -23,7 +23,7 @@ private slots:
 
 private:
     Ui::RegistrWindow *ui;
-    AuthController* m_controller;
+    IAuthController* m_controller;
 };
 
 #endif // REGISTRWINDOW_H

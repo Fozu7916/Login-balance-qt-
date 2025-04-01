@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "../model/Users.h"
-#include "../controller/authcontroller.h"
+#include "../controller/iauthcontroller.h"
 
 namespace Ui {
 class MoneyChange;
@@ -16,21 +16,21 @@ signals:
 
 
 public:
-    explicit MoneyChange(AuthController* controller,QWidget *parent = nullptr);
+    explicit MoneyChange(IAuthController* controller,QWidget *parent = nullptr);
     ~MoneyChange();
     bool getIsWithdrawal();
     void setIsWithdrawal(bool isWithdrawal);
-    void showError(QString text);
 
 
 
 private slots:
     void on_ConfirmButton_clicked();
+    void showError(QString text);
 
 private:
     Ui::MoneyChange *ui;
     Users *user;
-    AuthController* m_controller;
+    IAuthController* m_controller;
     bool isWithdrawal;
 };
 

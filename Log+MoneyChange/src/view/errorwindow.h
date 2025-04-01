@@ -13,8 +13,9 @@ class ErrorWindow : public QMainWindow
 
 public:
     explicit ErrorWindow(QWidget *parent = nullptr);
-    void setErrorMessage(const QString& message);
     ~ErrorWindow();
+
+    void setErrorMessage(const QString& message);
     void showWindow(const QString& error);
 private slots:
     void on_ConfirmButton_clicked();

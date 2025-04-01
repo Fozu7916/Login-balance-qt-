@@ -1,18 +1,18 @@
 //moneychange.cpp
 #include "moneychange.h"
-#include "../controller/authcontroller.h"
+#include "../controller/iauthcontroller.h"
 #include "errorwindow.h"
 #include "./ui_moneychange.h"
 #include <QString>
 #include <qregularexpression.h>
 
-MoneyChange::MoneyChange(AuthController *controller,QWidget *parent)
+MoneyChange::MoneyChange(IAuthController *controller,QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MoneyChange)
     , m_controller(controller)
 {
     ui->setupUi(this);
-    connect(m_controller,&AuthController::error,this,&MoneyChange::showError);
+    m_controller->connectToErrorSignal(this, SLOT(showError(QString)));
 }
 
 MoneyChange::~MoneyChange()

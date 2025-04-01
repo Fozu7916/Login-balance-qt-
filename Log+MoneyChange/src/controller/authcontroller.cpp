@@ -1,11 +1,27 @@
 #include "authcontroller.h"
-#include "../model/database.h"
 #include "../model/Users.h"
+#include "../model/idatabase.h"
 #include "../hashutils.h"
 #include <qdatetime.h>
 
-AuthController::AuthController(DataBase &db, QObject *parent)
-    : QObject(parent), m_db(db) {}
+AuthController::AuthController(IDataBase &db, QObject* parent)
+    : IAuthController(parent)
+    , m_db(db)
+{}
+
+
+void AuthController::connectToErrorSignal(QObject* receiver, const char* method) {
+    connect(this, SIGNAL(error(QString)), receiver, method);
+}
+ 
+void AuthController::connectToMoneyChangedSignal(QObject* receiver, const char* method){
+    connect(this, SIGNAL(moneyChanged(int)), receiver, method);
+}
+
+void AuthController::connectToMoneyWindowRequestedSignal(QObject* receiver, const char* method) {
+    connect(this, SIGNAL(moneyWindowRequested(Users&)), receiver, method);
+}
+    
 
 void AuthController::login(QString username, QString password) {
 

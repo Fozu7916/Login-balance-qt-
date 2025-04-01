@@ -8,7 +8,7 @@
 #include <QDateTime>
 #include "../changebackground.h"
 
-MoneyWindow::MoneyWindow(AuthController *controller, QWidget *parent)
+MoneyWindow::MoneyWindow(IAuthController *controller, QWidget *parent)   
     : QMainWindow(parent)
     , ui(new Ui::MoneyWindow)
     ,m_controller(controller)
@@ -18,13 +18,21 @@ MoneyWindow::MoneyWindow(AuthController *controller, QWidget *parent)
     setWindowTitle(m_controller->getUser().getName());
     changebackground(this, ":/images/2nd background.jpg");
 
-    connect(m_controller, &AuthController::moneyChanged, this, &MoneyWindow::updateDisplay);
+    m_controller->connectToMoneyChangedSignal(this, SLOT(updateDisplay(int)));
     loadTransactionHistory();
 }
 
 MoneyWindow::~MoneyWindow()
 {
     delete ui;
+}
+
+void MoneyWindow::on_AddButton_clicked() {
+    MoneyWindow::openNewWindow(false,"Пополнить");
+}
+
+void MoneyWindow::on_RemoveButton_clicked() {
+    MoneyWindow::openNewWindow(true,"Снять");
 }
 
 void MoneyWindow::loadTransactionHistory() {
@@ -34,14 +42,6 @@ void MoneyWindow::loadTransactionHistory() {
     for (const QString& transaction : history) {
         ui->HistoryView->addItem(transaction);
     }
-}
-
-void MoneyWindow::on_AddButton_clicked() {
-    MoneyWindow::openNewWindow(false,"Пополнить");
-}
-
-void MoneyWindow::on_RemoveButton_clicked() {
-    MoneyWindow::openNewWindow(true,"Снять");
 }
 
 void MoneyWindow::updateDisplay(int amount) {
@@ -60,8 +60,5 @@ void MoneyWindow::openNewWindow(bool isWithdrawal,const QString& phrase) {
     change->setAttribute(Qt::WA_DeleteOnClose);
     change->show();
 }
-
-
-
 
 

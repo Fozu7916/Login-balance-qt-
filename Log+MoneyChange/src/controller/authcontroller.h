@@ -2,17 +2,23 @@
 #define AUTHCONTROLLER_H
 
 #include <QObject>
-#include "../model/database.h"
+#include "../model/idatabase.h"
 #include "../model/Users.h"
+#include "iauthcontroller.h"
 
-class AuthController : public QObject
+class AuthController : public IAuthController
 {
     Q_OBJECT
 public:
-    AuthController(DataBase &db, QObject* parent = nullptr);
-    DataBase& getDatabase()  {return m_db;}
-    Users& getUser() {return m_currentUser;}
+    AuthController(IDataBase &db, QObject* parent = nullptr);
+    IDataBase& getDatabase() override {return m_db;}
+    Users& getUser() override {return m_currentUser;}
 
+
+    void connectToErrorSignal(QObject* receiver, const char* method) override; 
+    void connectToMoneyChangedSignal(QObject* receiver, const char* method) override; 
+    void connectToMoneyWindowRequestedSignal(QObject* receiver, const char* method) override ;
+    
 
 signals:
     void registrationRequested();
@@ -21,13 +27,13 @@ signals:
     void moneyChanged(int amount);
 
 public slots:
-    void login(QString username,QString password);
-    void reg(QString username, QString password, QString password2);
-    QString updateDisplay(int amount);
-    void updateBalance(bool isWithdrawal, int amount);
-    QList<QString> getTransactionHistory() const;
+    void login(QString username,QString password) override;
+    void reg(QString username, QString password, QString password2) override;
+    QString updateDisplay(int amount) override;
+    void updateBalance(bool isWithdrawal, int amount) override;
+    QList<QString> getTransactionHistory() const override;
 private:
-    DataBase& m_db;
+    IDataBase& m_db;
     Users m_currentUser;
 };
 

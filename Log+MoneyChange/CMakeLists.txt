@@ -27,7 +27,7 @@ endif()
 # ==================== Источники ====================
 set(PROJECT_SOURCES
     src/main.cpp src/hashutils.h 
-    src/changebackground.h src/changebackground.cpp
+    src/changebackground.cpp src/changebackground.h
 
     #controller
     src/controller/authcontroller.h src/controller/authcontroller.cpp

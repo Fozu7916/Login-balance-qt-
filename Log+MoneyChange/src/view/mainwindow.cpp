@@ -5,14 +5,14 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QSqlQuery>
-#include "../controller/authcontroller.h"
+#include "../controller/iauthcontroller.h"
 #include "errorwindow.h"
 #include "moneywindow.h"
 #include "registrwindow.h"
 #include "../changebackground.h"
 
 
-MainWindow::MainWindow(AuthController* controller,QWidget *parent)
+MainWindow::MainWindow(IAuthController* controller,QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , m_controller(controller)
@@ -21,9 +21,8 @@ MainWindow::MainWindow(AuthController* controller,QWidget *parent)
     changebackground(this,":/images/background.png");
     ui->PasEdit->setEchoMode(QLineEdit::Password);
 
-    connect(ui->RegistrButton, &QPushButton::clicked,this, &MainWindow::createRegistrationWindow);
-    connect(m_controller,&AuthController::error,this,&MainWindow::showError);
-    connect(m_controller, &AuthController::moneyWindowRequested,this, &MainWindow::createMoneyWindow);
+    m_controller->connectToErrorSignal(this, SLOT(showError(QString)));
+    m_controller->connectToMoneyWindowRequestedSignal(this, SLOT(createMoneyWindow()));
 }
 
 
@@ -34,13 +33,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_ConfirmButton_clicked(){
     m_controller->login(ui->NameEdit->text(),ui->PasEdit->text());
-}
-
-void MainWindow::createRegistrationWindow()
-{
-    RegistrWindow *regWindow = new RegistrWindow(m_controller);
-    regWindow->setAttribute(Qt::WA_DeleteOnClose);
-    regWindow->show();
 }
 
 void MainWindow::createMoneyWindow()
@@ -54,5 +46,13 @@ void MainWindow::createMoneyWindow()
 void MainWindow::showError(QString text){
     ErrorWindow *err = new ErrorWindow();
     err->showWindow(text);
+}
+
+
+void MainWindow::on_RegistrButton_clicked()
+{
+    RegistrWindow *regWindow = new RegistrWindow(m_controller);
+    regWindow->setAttribute(Qt::WA_DeleteOnClose);
+    regWindow->show();
 }
 

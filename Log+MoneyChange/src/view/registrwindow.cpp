@@ -4,16 +4,15 @@
 #include "ui_registrwindow.h"
 #include <qsqlerror.h>
 #include <qsqlquery.h>
-#include "../controller/authcontroller.h"
-#include "../hashutils.h"
+#include "../controller/iauthcontroller.h"
 
-RegistrWindow::RegistrWindow(AuthController* controller, QWidget *parent)
+RegistrWindow::RegistrWindow(IAuthController* controller, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::RegistrWindow)
     ,m_controller(controller)
 {
     ui->setupUi(this);
-    connect(m_controller,&AuthController::error,this,&RegistrWindow::showError);
+    m_controller->connectToErrorSignal(m_controller, SLOT(error(QString)));
 }
 
 RegistrWindow::~RegistrWindow()
