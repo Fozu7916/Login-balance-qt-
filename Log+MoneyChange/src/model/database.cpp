@@ -9,6 +9,11 @@
 #include "../view/errorwindow.h"
 #include "../config.h"
 
+ DataBase::DataBase(QSqlDatabase db, QObject *parent)
+    : IDataBase(parent)
+    , m_db(db) 
+ {}
+
 QSqlDatabase DataBase::connectToMySQL()
 {
     m_db = QSqlDatabase::addDatabase("QMYSQL");

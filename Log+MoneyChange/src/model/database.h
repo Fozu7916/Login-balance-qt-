@@ -10,8 +10,8 @@ class DataBase : public IDataBase
 {
     Q_OBJECT
 public:
-    explicit DataBase(QSqlDatabase db, QObject *parent = nullptr) : IDataBase(parent), m_db(db) {};
-
+    DataBase(QSqlDatabase db, QObject *parent = nullptr);
+    
     int getMoneyFromUser(const QString& username) override;
     QSqlDatabase connectToMySQL() override;
     bool updateMoneyInDatabase(int newMoney, Users *user) override;
