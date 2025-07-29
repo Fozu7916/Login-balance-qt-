@@ -36,6 +36,7 @@ BalanceManager — это простое, но функциональное пр
 ## Зависимости
 - [Qt 6.x](https://www.qt.io/download)
 - [MySQL](https://www.mysql.com/)
+- [QSQLDriver](https://github.com/thecodemonkey86/qt_mysql_driver)
 
 ## Структура проекта
 ```
